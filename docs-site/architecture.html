@@ -1,137 +1,407 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR" class="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arquitetura Técnica — orcha-mcp</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            accent: { 50:'#faf5ff',100:'#f3e8ff',200:'#e9d5ff',300:'#d8b4fe',400:'#c084fc',500:'#a855f7',600:'#9333ea',700:'#7e22ce',800:'#6b21a8',900:'#581c87' },
-            surface: { DEFAULT:'#0d1117',100:'#161b22',200:'#21262d',300:'#30363d',400:'#484f58' }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arquitetura Técnica — orcha-mcp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              accent: {
+                50: "#faf5ff",
+                100: "#f3e8ff",
+                200: "#e9d5ff",
+                300: "#d8b4fe",
+                400: "#c084fc",
+                500: "#a855f7",
+                600: "#9333ea",
+                700: "#7e22ce",
+                800: "#6b21a8",
+                900: "#581c87",
+              },
+              surface: {
+                DEFAULT: "#0d1117",
+                100: "#161b22",
+                200: "#21262d",
+                300: "#30363d",
+                400: "#484f58",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            },
           },
-          fontFamily: { sans:['Inter','sans-serif'], mono:['JetBrains Mono','monospace'] }
-        }
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #0d1117;
+        color: #e6edf3;
+        font-family: "Inter", sans-serif;
       }
-    }
-  </script>
-  <style>
-    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', sans-serif; }
-    .sidebar-link.active { color: #a855f7; border-left-color: #a855f7; }
-    .sidebar-link { border-left: 2px solid transparent; transition: all 0.15s; }
-    .sidebar-link:hover { color: #c084fc; border-left-color: #6b21a8; }
-    pre { position: relative; }
-    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #30363d; color: #8b949e; border: 1px solid #484f58; border-radius: 6px; padding: 2px 8px; font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; }
-    .copy-btn:hover { background: #6b21a8; color: #fff; border-color: #a855f7; }
-    .copy-btn.copied { background: #238636; color: #fff; border-color: #2ea043; }
-    .hljs { background: #161b22 !important; border-radius: 8px; padding: 1.25rem !important; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; }
-    table { border-collapse: collapse; width: 100%; }
-    th { background: #21262d; color: #a855f7; text-align: left; padding: 0.625rem 1rem; font-weight: 600; font-size: 0.875rem; }
-    td { padding: 0.625rem 1rem; border-top: 1px solid #30363d; font-size: 0.875rem; color: #c9d1d9; }
-    tr:hover td { background: #161b22; }
-    code:not(.hljs) { background: #21262d; color: #d2a8ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-    .nav-active { color: #a855f7 !important; }
-    h1,h2,h3,h4 { scroll-margin-top: 5rem; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #161b22; }
-    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #484f58; }
-    .prose-content h2 { font-size: 1.5rem; font-weight: 700; color: #e6edf3; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #21262d; }
-    .prose-content h3 { font-size: 1.125rem; font-weight: 600; color: #c9d1d9; margin-top: 1.75rem; margin-bottom: 0.75rem; }
-    .prose-content p { color: #8b949e; line-height: 1.7; margin-bottom: 1rem; }
-    .prose-content ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
-    .prose-content ul li { color: #8b949e; margin-bottom: 0.375rem; line-height: 1.6; }
-    .prose-content ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
-    .prose-content ol li { color: #8b949e; margin-bottom: 0.375rem; line-height: 1.6; }
-    .prose-content a { color: #a855f7; text-decoration: none; }
-    .prose-content a:hover { color: #c084fc; text-decoration: underline; }
-    .flow-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 0.75rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
-    .flow-arrow { color: #484f58; text-align: center; font-size: 1.25rem; line-height: 1; }
-  </style>
-</head>
-<body>
-  <!-- Navbar -->
-  <header class="fixed top-0 left-0 right-0 z-50 border-b border-surface-200" style="background:#0d1117ee;backdrop-filter:blur(12px);">
-    <div class="max-w-screen-2xl mx-auto flex items-center justify-between px-4 h-14">
-      <div class="flex items-center gap-3">
-        <button id="menu-btn" class="md:hidden p-1.5 rounded text-gray-400 hover:text-white hover:bg-surface-200 transition">
-          <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-          <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-        <a href="index.html" class="flex items-center gap-2">
-          <span class="font-mono text-accent-400 font-bold text-lg">orcha-mcp</span>
-          <span class="hidden sm:inline text-surface-400 text-sm">/</span>
-          <span class="hidden sm:inline text-gray-400 text-sm">docs</span>
+      .sidebar-link.active {
+        color: #a855f7;
+        border-left-color: #a855f7;
+      }
+      .sidebar-link {
+        border-left: 2px solid transparent;
+        transition: all 0.15s;
+      }
+      .sidebar-link:hover {
+        color: #c084fc;
+        border-left-color: #6b21a8;
+      }
+      pre {
+        position: relative;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #30363d;
+        color: #8b949e;
+        border: 1px solid #484f58;
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 12px;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        transition: all 0.15s;
+      }
+      .copy-btn:hover {
+        background: #6b21a8;
+        color: #fff;
+        border-color: #a855f7;
+      }
+      .copy-btn.copied {
+        background: #238636;
+        color: #fff;
+        border-color: #2ea043;
+      }
+      .hljs {
+        background: #161b22 !important;
+        border-radius: 8px;
+        padding: 1.25rem !important;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.875rem;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th {
+        background: #21262d;
+        color: #a855f7;
+        text-align: left;
+        padding: 0.625rem 1rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+      td {
+        padding: 0.625rem 1rem;
+        border-top: 1px solid #30363d;
+        font-size: 0.875rem;
+        color: #c9d1d9;
+      }
+      tr:hover td {
+        background: #161b22;
+      }
+      code:not(.hljs) {
+        background: #21262d;
+        color: #d2a8ff;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.85em;
+      }
+      .nav-active {
+        color: #a855f7 !important;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        scroll-margin-top: 5rem;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #161b22;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #30363d;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #484f58;
+      }
+      .prose-content h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #e6edf3;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #21262d;
+      }
+      .prose-content h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #c9d1d9;
+        margin-top: 1.75rem;
+        margin-bottom: 0.75rem;
+      }
+      .prose-content p {
+        color: #8b949e;
+        line-height: 1.7;
+        margin-bottom: 1rem;
+      }
+      .prose-content ul {
+        list-style: disc;
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .prose-content ul li {
+        color: #8b949e;
+        margin-bottom: 0.375rem;
+        line-height: 1.6;
+      }
+      .prose-content ol {
+        list-style: decimal;
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .prose-content ol li {
+        color: #8b949e;
+        margin-bottom: 0.375rem;
+        line-height: 1.6;
+      }
+      .prose-content a {
+        color: #a855f7;
+        text-decoration: none;
+      }
+      .prose-content a:hover {
+        color: #c084fc;
+        text-decoration: underline;
+      }
+      .flow-box {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+      }
+      .flow-arrow {
+        color: #484f58;
+        text-align: center;
+        font-size: 1.25rem;
+        line-height: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header
+      class="fixed top-0 left-0 right-0 z-50 border-b border-surface-200"
+      style="background: #0d1117ee; backdrop-filter: blur(12px)"
+    >
+      <div
+        class="max-w-screen-2xl mx-auto flex items-center justify-between px-4 h-14"
+      >
+        <div class="flex items-center gap-3">
+          <button
+            id="menu-btn"
+            class="md:hidden p-1.5 rounded text-gray-400 hover:text-white hover:bg-surface-200 transition"
+          >
+            <svg
+              id="icon-open"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+            <svg
+              id="icon-close"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 hidden"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+          <a href="index.html" class="flex items-center gap-2">
+            <span class="font-mono text-accent-400 font-bold text-lg"
+              >orcha-mcp</span
+            >
+            <span class="hidden sm:inline text-surface-400 text-sm">/</span>
+            <span class="hidden sm:inline text-gray-400 text-sm">docs</span>
+          </a>
+        </div>
+        <nav class="hidden md:flex items-center gap-1">
+          <a
+            href="index.html"
+            class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white"
+            >Visão Geral</a
+          >
+          <a
+            href="architecture.html"
+            class="nav-active px-3 py-1.5 rounded text-sm font-medium transition hover:bg-surface-200"
+            >Arquitetura</a
+          >
+          <a
+            href="backlog.html"
+            class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white"
+            >Backlog</a
+          >
+          <a
+            href="mvp.html"
+            class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white"
+            >MVP</a
+          >
+        </nav>
+        <a
+          href="https://github.com/nataliatviana/orcha-mcp"
+          target="_blank"
+          class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition px-3 py-1.5 rounded hover:bg-surface-200"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
+            />
+          </svg>
+          GitHub
         </a>
       </div>
-      <nav class="hidden md:flex items-center gap-1">
-        <a href="index.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">Visão Geral</a>
-        <a href="architecture.html" class="nav-active px-3 py-1.5 rounded text-sm font-medium transition hover:bg-surface-200">Arquitetura</a>
-        <a href="backlog.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">Backlog</a>
-        <a href="mvp.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">MVP</a>
-      </nav>
-      <a href="https://github.com/seu-usuario/orcha-mcp" target="_blank" class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition px-3 py-1.5 rounded hover:bg-surface-200">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        GitHub
-      </a>
-    </div>
-    <div id="mobile-menu" class="hidden md:hidden border-t border-surface-200 px-4 py-3 flex flex-col gap-1">
-      <a href="index.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">Visão Geral</a>
-      <a href="architecture.html" class="block px-3 py-2 rounded text-sm font-medium text-accent-400 bg-surface-100">Arquitetura</a>
-      <a href="backlog.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">Backlog</a>
-      <a href="mvp.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">MVP</a>
-    </div>
-  </header>
-
-  <div class="max-w-screen-2xl mx-auto flex pt-14">
-    <!-- Sidebar -->
-    <aside id="sidebar" class="hidden md:block fixed top-14 left-0 bottom-0 w-64 overflow-y-auto border-r border-surface-200 px-4 py-6" style="background:#0d1117;">
-      <p class="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-3 px-2">Nesta página</p>
-      <nav id="sidebar-nav" class="flex flex-col gap-0.5"></nav>
-    </aside>
-
-    <!-- Main -->
-    <main class="flex-1 md:ml-64 min-w-0 px-6 md:px-12 py-10 max-w-4xl prose-content">
-
-      <div class="mb-10">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-0.5 rounded-full border border-accent-700">arquitetura</span>
-        </div>
-        <h1 class="text-4xl font-bold text-white mb-4">Arquitetura Técnica</h1>
-        <p class="text-lg text-gray-400 leading-relaxed max-w-2xl">
-          Como o <code>orcha-mcp</code> implementa o papel de MCP Host, gerenciando múltiplos clients e coordenando um LLM para usar as ferramentas expostas pelos servers.
-        </p>
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden border-t border-surface-200 px-4 py-3 flex flex-col gap-1"
+      >
+        <a
+          href="index.html"
+          class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white"
+          >Visão Geral</a
+        >
+        <a
+          href="architecture.html"
+          class="block px-3 py-2 rounded text-sm font-medium text-accent-400 bg-surface-100"
+          >Arquitetura</a
+        >
+        <a
+          href="backlog.html"
+          class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white"
+          >Backlog</a
+        >
+        <a
+          href="mvp.html"
+          class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white"
+          >MVP</a
+        >
       </div>
+    </header>
 
-      <hr class="border-surface-200 my-8" />
-
-      <!-- Visão geral -->
-      <section id="visao-geral">
-        <h2>Visão Geral</h2>
-        <p>
-          O <code>orcha-mcp</code> implementa o papel de <strong class="text-gray-300">MCP Host</strong>: uma aplicação que gerencia múltiplos MCP Clients, cada um mantendo uma conexão dedicada com um MCP Server, e coordena um LLM para usar as ferramentas expostas por esses servers.
+    <div class="max-w-screen-2xl mx-auto flex pt-14">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="hidden md:block fixed top-14 left-0 bottom-0 w-64 overflow-y-auto border-r border-surface-200 px-4 py-6"
+        style="background: #0d1117"
+      >
+        <p
+          class="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-3 px-2"
+        >
+          Nesta página
         </p>
+        <nav id="sidebar-nav" class="flex flex-col gap-0.5"></nav>
+      </aside>
 
-        <div class="my-6 rounded-xl border border-surface-200 overflow-hidden">
-          <div class="bg-surface-100 px-4 py-2 border-b border-surface-200 flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-red-500"></span>
-            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
-            <span class="w-3 h-3 rounded-full bg-green-500"></span>
-            <span class="ml-2 text-xs text-surface-400 font-mono">diagrama de componentes</span>
+      <!-- Main -->
+      <main
+        class="flex-1 md:ml-64 min-w-0 px-6 md:px-12 py-10 max-w-4xl prose-content"
+      >
+        <div class="mb-10">
+          <div class="flex items-center gap-2 mb-3">
+            <span
+              class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-0.5 rounded-full border border-accent-700"
+              >arquitetura</span
+            >
           </div>
-          <pre class="!rounded-none !border-0 !my-0"><code class="language-plaintext" style="background:#161b22;display:block;padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:#8b949e;line-height:1.7;">┌─────────────────────────────────────────────────────────────┐
+          <h1 class="text-4xl font-bold text-white mb-4">
+            Arquitetura Técnica
+          </h1>
+          <p class="text-lg text-gray-400 leading-relaxed max-w-2xl">
+            Como o <code>orcha-mcp</code> implementa o papel de MCP Host,
+            gerenciando múltiplos clients e coordenando um LLM para usar as
+            ferramentas expostas pelos servers.
+          </p>
+        </div>
+
+        <hr class="border-surface-200 my-8" />
+
+        <!-- Visão geral -->
+        <section id="visao-geral">
+          <h2>Visão Geral</h2>
+          <p>
+            O <code>orcha-mcp</code> implementa o papel de
+            <strong class="text-gray-300">MCP Host</strong>: uma aplicação que
+            gerencia múltiplos MCP Clients, cada um mantendo uma conexão
+            dedicada com um MCP Server, e coordena um LLM para usar as
+            ferramentas expostas por esses servers.
+          </p>
+
+          <div
+            class="my-6 rounded-xl border border-surface-200 overflow-hidden"
+          >
+            <div
+              class="bg-surface-100 px-4 py-2 border-b border-surface-200 flex items-center gap-2"
+            >
+              <span class="w-3 h-3 rounded-full bg-red-500"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+              <span class="w-3 h-3 rounded-full bg-green-500"></span>
+              <span class="ml-2 text-xs text-surface-400 font-mono"
+                >diagrama de componentes</span
+              >
+            </div>
+            <pre
+              class="!rounded-none !border-0 !my-0"
+            ><code class="language-plaintext" style="background:#161b22;display:block;padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:#8b949e;line-height:1.7;">┌─────────────────────────────────────────────────────────────┐
 │                        orcha-mcp                            │
 │                    (MCP Host / Orchestrator)                 │
 │                                                             │
@@ -154,44 +424,72 @@
                     │  (local)     │  │   (remoto)       │
                     │  filesystem  │  │   fetch / sentry │
                     └──────────────┘  └──────────────────┘</code></pre>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <!-- Participantes -->
-      <section id="participantes">
-        <h2>Participantes do Protocolo MCP</h2>
-        <p>O protocolo define três participantes centrais. O <code>orcha-mcp</code> implementa os dois primeiros:</p>
-        <div class="rounded-xl border border-surface-200 overflow-hidden my-4">
-          <table>
-            <thead><tr><th>Participante</th><th>Papel</th><th>Quem implementa</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-accent-500"></span><strong class="text-gray-300">MCP Host</strong></span></td>
-                <td>Coordena clients e fornece contexto ao LLM</td>
-                <td><code>host.py</code></td>
-              </tr>
-              <tr>
-                <td><span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span><strong class="text-gray-300">MCP Client</strong></span></td>
-                <td>Mantém uma conexão dedicada com um server</td>
-                <td><code>client.py</code></td>
-              </tr>
-              <tr>
-                <td><span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500"></span><strong class="text-gray-300">MCP Server</strong></span></td>
-                <td>Expõe ferramentas, recursos e prompts</td>
-                <td>Processos externos</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        <!-- Participantes -->
+        <section id="participantes">
+          <h2>Participantes do Protocolo MCP</h2>
+          <p>
+            O protocolo define três participantes centrais. O
+            <code>orcha-mcp</code> implementa os dois primeiros:
+          </p>
+          <div
+            class="rounded-xl border border-surface-200 overflow-hidden my-4"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Participante</th>
+                  <th>Papel</th>
+                  <th>Quem implementa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="inline-flex items-center gap-1.5"
+                      ><span class="w-2 h-2 rounded-full bg-accent-500"></span
+                      ><strong class="text-gray-300">MCP Host</strong></span
+                    >
+                  </td>
+                  <td>Coordena clients e fornece contexto ao LLM</td>
+                  <td><code>host.py</code></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="inline-flex items-center gap-1.5"
+                      ><span class="w-2 h-2 rounded-full bg-blue-500"></span
+                      ><strong class="text-gray-300">MCP Client</strong></span
+                    >
+                  </td>
+                  <td>Mantém uma conexão dedicada com um server</td>
+                  <td><code>client.py</code></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="inline-flex items-center gap-1.5"
+                      ><span class="w-2 h-2 rounded-full bg-green-500"></span
+                      ><strong class="text-gray-300">MCP Server</strong></span
+                    >
+                  </td>
+                  <td>Expõe ferramentas, recursos e prompts</td>
+                  <td>Processos externos</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-      <!-- Camadas do protocolo -->
-      <section id="camadas">
-        <h2>Camadas do Protocolo</h2>
+        <!-- Camadas do protocolo -->
+        <section id="camadas">
+          <h2>Camadas do Protocolo</h2>
 
-        <h3 id="data-layer">Data Layer (JSON-RPC 2.0)</h3>
-        <p>Toda comunicação usa mensagens JSON-RPC 2.0. Existem três tipos:</p>
-        <pre><code class="language-json">// Request (espera resposta)
+          <h3 id="data-layer">Data Layer (JSON-RPC 2.0)</h3>
+          <p>
+            Toda comunicação usa mensagens JSON-RPC 2.0. Existem três tipos:
+          </p>
+          <pre><code class="language-json">// Request (espera resposta)
 {"jsonrpc": "2.0", "id": 1, "method": "tools/list"}
 
 // Response
@@ -200,60 +498,109 @@
 // Notification (sem resposta esperada)
 {"jsonrpc": "2.0", "method": "notifications/initialized"}</code></pre>
 
-        <h3 id="transport-layer">Transport Layer</h3>
-        <p>Dois mecanismos de transporte são suportados:</p>
-        <div class="rounded-xl border border-surface-200 overflow-hidden my-4">
-          <table>
-            <thead><tr><th>Transport</th><th>Uso</th><th>Como funciona</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><span class="text-blue-400 font-mono font-medium">STDIO</span></td>
-                <td>Servers locais (subprocessos)</td>
-                <td><code>stdin</code>/<code>stdout</code> do processo filho</td>
-              </tr>
-              <tr>
-                <td><span class="text-green-400 font-mono font-medium">HTTP</span></td>
-                <td>Servers remotos</td>
-                <td>POST para o endpoint + SSE opcional</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Fluxo completo -->
-      <section id="fluxo-sessao">
-        <h2>Fluxo de uma Sessão Completa</h2>
-
-        <h3 id="inicializacao">1. Inicialização (Lifecycle)</h3>
-        <p>Quando o <code>orcha-mcp</code> inicia, para cada server configurado é executado o handshake:</p>
-
-        <div class="my-4 p-4 rounded-xl border border-surface-200 bg-surface-100 font-mono text-sm">
-          <div class="flex items-center gap-3 mb-1">
-            <span class="text-accent-400 font-bold w-12 text-right shrink-0">Host</span>
-            <span class="text-surface-400">──</span>
-            <span class="flex-1 text-blue-400">initialize ──────────────▶</span>
-            <span class="text-green-400 font-bold w-16 text-right shrink-0">Server</span>
+          <h3 id="transport-layer">Transport Layer</h3>
+          <p>Dois mecanismos de transporte são suportados:</p>
+          <div
+            class="rounded-xl border border-surface-200 overflow-hidden my-4"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Transport</th>
+                  <th>Uso</th>
+                  <th>Como funciona</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="text-blue-400 font-mono font-medium"
+                      >STDIO</span
+                    >
+                  </td>
+                  <td>Servers locais (subprocessos)</td>
+                  <td>
+                    <code>stdin</code>/<code>stdout</code> do processo filho
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="text-green-400 font-mono font-medium"
+                      >HTTP</span
+                    >
+                  </td>
+                  <td>Servers remotos</td>
+                  <td>POST para o endpoint + SSE opcional</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="text-xs text-surface-400 pl-16 mb-3">protocolVersion, capabilities do client</div>
-          <div class="flex items-center gap-3 mb-1">
-            <span class="text-accent-400 font-bold w-12 text-right shrink-0">Host</span>
-            <span class="text-surface-400">──</span>
-            <span class="flex-1 text-green-400">◀── initialize response ──────</span>
-            <span class="text-green-400 font-bold w-16 text-right shrink-0">Server</span>
-          </div>
-          <div class="text-xs text-surface-400 pl-16 mb-3">capabilities do server (tools, resources...)</div>
-          <div class="flex items-center gap-3 mb-1">
-            <span class="text-accent-400 font-bold w-12 text-right shrink-0">Host</span>
-            <span class="text-surface-400">──</span>
-            <span class="flex-1 text-yellow-400">notifications/initialized ▶</span>
-            <span class="text-green-400 font-bold w-16 text-right shrink-0">Server</span>
-          </div>
-          <div class="text-xs text-surface-400 pl-16">sinaliza que está pronto</div>
-        </div>
+        </section>
 
-        <p class="text-xs text-surface-400 mb-2 font-mono">→ mensagens reais trocadas (visíveis com <code>--verbose</code>):</p>
-        <pre><code class="language-json">// Host envia
+        <!-- Fluxo completo -->
+        <section id="fluxo-sessao">
+          <h2>Fluxo de uma Sessão Completa</h2>
+
+          <h3 id="inicializacao">1. Inicialização (Lifecycle)</h3>
+          <p>
+            Quando o <code>orcha-mcp</code> inicia, para cada server configurado
+            é executado o handshake:
+          </p>
+
+          <div
+            class="my-4 p-4 rounded-xl border border-surface-200 bg-surface-100 font-mono text-sm"
+          >
+            <div class="flex items-center gap-3 mb-1">
+              <span class="text-accent-400 font-bold w-12 text-right shrink-0"
+                >Host</span
+              >
+              <span class="text-surface-400">──</span>
+              <span class="flex-1 text-blue-400"
+                >initialize ──────────────▶</span
+              >
+              <span class="text-green-400 font-bold w-16 text-right shrink-0"
+                >Server</span
+              >
+            </div>
+            <div class="text-xs text-surface-400 pl-16 mb-3">
+              protocolVersion, capabilities do client
+            </div>
+            <div class="flex items-center gap-3 mb-1">
+              <span class="text-accent-400 font-bold w-12 text-right shrink-0"
+                >Host</span
+              >
+              <span class="text-surface-400">──</span>
+              <span class="flex-1 text-green-400"
+                >◀── initialize response ──────</span
+              >
+              <span class="text-green-400 font-bold w-16 text-right shrink-0"
+                >Server</span
+              >
+            </div>
+            <div class="text-xs text-surface-400 pl-16 mb-3">
+              capabilities do server (tools, resources...)
+            </div>
+            <div class="flex items-center gap-3 mb-1">
+              <span class="text-accent-400 font-bold w-12 text-right shrink-0"
+                >Host</span
+              >
+              <span class="text-surface-400">──</span>
+              <span class="flex-1 text-yellow-400"
+                >notifications/initialized ▶</span
+              >
+              <span class="text-green-400 font-bold w-16 text-right shrink-0"
+                >Server</span
+              >
+            </div>
+            <div class="text-xs text-surface-400 pl-16">
+              sinaliza que está pronto
+            </div>
+          </div>
+
+          <p class="text-xs text-surface-400 mb-2 font-mono">
+            → mensagens reais trocadas (visíveis com <code>--verbose</code>):
+          </p>
+          <pre><code class="language-json">// Host envia
 {
   "jsonrpc": "2.0",
   "id": 1,
@@ -276,8 +623,8 @@
   }
 }</code></pre>
 
-        <h3 id="tool-discovery">2. Tool Discovery</h3>
-        <pre><code class="language-json">// Request
+          <h3 id="tool-discovery">2. Tool Discovery</h3>
+          <pre><code class="language-json">// Request
 {"jsonrpc": "2.0", "id": 2, "method": "tools/list"}
 
 // Response
@@ -301,9 +648,11 @@
   }
 }</code></pre>
 
-        <h3 id="decisao-llm">3. Decisão do LLM</h3>
-        <p>O Host monta uma lista unificada de todas as tools e envia ao LLM:</p>
-        <pre><code class="language-python"># Pseudocódigo interno do orcha-mcp
+          <h3 id="decisao-llm">3. Decisão do LLM</h3>
+          <p>
+            O Host monta uma lista unificada de todas as tools e envia ao LLM:
+          </p>
+          <pre><code class="language-python"># Pseudocódigo interno do orcha-mcp
 tools_for_llm = []
 for client in host.clients:
     tools = await client.list_tools()
@@ -318,8 +667,11 @@ response = await llm.complete(
     messages=[{"role": "user", "content": pergunta}],
     tools=tools_for_llm
 )</code></pre>
-        <p>O LLM responde com <code>tool_use</code> quando decide usar uma ferramenta:</p>
-        <pre><code class="language-json">{
+          <p>
+            O LLM responde com <code>tool_use</code> quando decide usar uma
+            ferramenta:
+          </p>
+          <pre><code class="language-json">{
   "role": "assistant",
   "content": [
     {
@@ -331,9 +683,13 @@ response = await llm.complete(
   ]
 }</code></pre>
 
-        <h3 id="tool-execution">4. Tool Execution (Roteamento)</h3>
-        <p>O Host identifica qual server possui a tool pelo prefixo do namespace e delega ao Client correto. O <code>tools/call</code> enviado ao server:</p>
-        <pre><code class="language-json">// Host → Server
+          <h3 id="tool-execution">4. Tool Execution (Roteamento)</h3>
+          <p>
+            O Host identifica qual server possui a tool pelo prefixo do
+            namespace e delega ao Client correto. O
+            <code>tools/call</code> enviado ao server:
+          </p>
+          <pre><code class="language-json">// Host → Server
 {
   "jsonrpc": "2.0",
   "id": 3,
@@ -353,99 +709,158 @@ response = await llm.complete(
   }
 }</code></pre>
 
-        <h3 id="resposta-final">5. Resposta Final</h3>
-        <p>O resultado é inserido no histórico de mensagens e enviado novamente ao LLM, que formula a resposta final ao usuário.</p>
-      </section>
+          <h3 id="resposta-final">5. Resposta Final</h3>
+          <p>
+            O resultado é inserido no histórico de mensagens e enviado novamente
+            ao LLM, que formula a resposta final ao usuário.
+          </p>
+        </section>
 
-      <!-- Primitivos MCP -->
-      <section id="primitivos">
-        <h2>Primitivos MCP</h2>
-        <p>O protocolo define três tipos de primitivos que servers podem expor:</p>
-        <div class="rounded-xl border border-surface-200 overflow-hidden my-4">
-          <table>
-            <thead><tr><th>Primitivo</th><th>O que é</th><th>Descoberta</th><th>Uso</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><span class="text-accent-400 font-semibold">Tools</span></td>
-                <td>Funções executáveis (ações)</td>
-                <td><code>tools/list</code></td>
-                <td><code>tools/call</code></td>
-              </tr>
-              <tr>
-                <td><span class="text-blue-400 font-semibold">Resources</span></td>
-                <td>Dados/contexto (leitura)</td>
-                <td><code>resources/list</code></td>
-                <td><code>resources/read</code></td>
-              </tr>
-              <tr>
-                <td><span class="text-green-400 font-semibold">Prompts</span></td>
-                <td>Templates reutilizáveis</td>
-                <td><code>prompts/list</code></td>
-                <td><code>prompts/get</code></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="flex items-start gap-3 p-4 rounded-xl border border-yellow-800 bg-yellow-900/20 mt-4">
-          <span class="text-yellow-500 text-lg shrink-0">⚠</span>
-          <p class="!mb-0 !text-yellow-200/70 text-sm">O MVP foca em <strong class="text-yellow-300">Tools</strong>. Resources e Prompts são épicos futuros (E8).</p>
-        </div>
-      </section>
+        <!-- Primitivos MCP -->
+        <section id="primitivos">
+          <h2>Primitivos MCP</h2>
+          <p>
+            O protocolo define três tipos de primitivos que servers podem expor:
+          </p>
+          <div
+            class="rounded-xl border border-surface-200 overflow-hidden my-4"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Primitivo</th>
+                  <th>O que é</th>
+                  <th>Descoberta</th>
+                  <th>Uso</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="text-accent-400 font-semibold">Tools</span>
+                  </td>
+                  <td>Funções executáveis (ações)</td>
+                  <td><code>tools/list</code></td>
+                  <td><code>tools/call</code></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="text-blue-400 font-semibold">Resources</span>
+                  </td>
+                  <td>Dados/contexto (leitura)</td>
+                  <td><code>resources/list</code></td>
+                  <td><code>resources/read</code></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="text-green-400 font-semibold">Prompts</span>
+                  </td>
+                  <td>Templates reutilizáveis</td>
+                  <td><code>prompts/list</code></td>
+                  <td><code>prompts/get</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            class="flex items-start gap-3 p-4 rounded-xl border border-yellow-800 bg-yellow-900/20 mt-4"
+          >
+            <span class="text-yellow-500 text-lg shrink-0">⚠</span>
+            <p class="!mb-0 !text-yellow-200/70 text-sm">
+              O MVP foca em <strong class="text-yellow-300">Tools</strong>.
+              Resources e Prompts são épicos futuros (E8).
+            </p>
+          </div>
+        </section>
 
-      <!-- Comparativo -->
-      <section id="comparativo">
-        <h2>Comparativo com outras ferramentas</h2>
-        <p>OpenCode, Claude Code e Gemini CLI implementam o mesmo papel de MCP Host. O loop interno é idêntico em todas — a diferença é exposição e runtime:</p>
-        <div class="rounded-xl border border-surface-200 overflow-hidden my-4">
-          <table>
-            <thead><tr><th>Ferramenta</th><th>Runtime</th><th>Transport</th><th>Config</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><span class="text-blue-400 font-semibold">OpenCode</span></td>
-                <td>TypeScript/Bun</td>
-                <td>STDIO + HTTP</td>
-                <td><code>opencode.json</code></td>
-              </tr>
-              <tr>
-                <td><span class="text-orange-400 font-semibold">Claude Code</span></td>
-                <td>TypeScript/Node</td>
-                <td>STDIO + HTTP</td>
-                <td><code>~/.claude/settings.json</code></td>
-              </tr>
-              <tr>
-                <td><span class="text-blue-300 font-semibold">Gemini CLI</span></td>
-                <td>TypeScript/Node</td>
-                <td>STDIO + HTTP</td>
-                <td><code>settings.json</code></td>
-              </tr>
-              <tr>
-                <td><span class="text-accent-400 font-semibold">orcha-mcp</span></td>
-                <td>Python</td>
-                <td>STDIO + HTTP</td>
-                <td><code>orcha.json</code></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p>O loop interno comum a todas:</p>
-        <ol>
-          <li>Ler config e conectar aos MCP servers configurados</li>
-          <li>Fazer <code>tools/list</code> em cada server</li>
-          <li>Montar lista unificada e enviar ao LLM com a pergunta do usuário</li>
-          <li>Interceptar <code>tool_use</code> do LLM</li>
-          <li>Rotear para o server correto via <code>tools/call</code></li>
-          <li>Inserir resultado no histórico e repetir até o LLM dar uma resposta final</li>
-        </ol>
-        <div class="flex items-start gap-3 p-4 rounded-xl border border-accent-800 bg-accent-900/20 mt-4">
-          <span class="text-accent-400 text-lg shrink-0">✦</span>
-          <p class="!mb-0 !text-accent-200/70 text-sm">A diferença do <code>orcha-mcp</code> é que a flag <code>--verbose</code> expõe cada uma dessas etapas com as mensagens JSON-RPC reais.</p>
-        </div>
-      </section>
+        <!-- Comparativo -->
+        <section id="comparativo">
+          <h2>Comparativo com outras ferramentas</h2>
+          <p>
+            OpenCode, Claude Code e Gemini CLI implementam o mesmo papel de MCP
+            Host. O loop interno é idêntico em todas — a diferença é exposição e
+            runtime:
+          </p>
+          <div
+            class="rounded-xl border border-surface-200 overflow-hidden my-4"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Ferramenta</th>
+                  <th>Runtime</th>
+                  <th>Transport</th>
+                  <th>Config</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="text-blue-400 font-semibold">OpenCode</span>
+                  </td>
+                  <td>TypeScript/Bun</td>
+                  <td>STDIO + HTTP</td>
+                  <td><code>opencode.json</code></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="text-orange-400 font-semibold"
+                      >Claude Code</span
+                    >
+                  </td>
+                  <td>TypeScript/Node</td>
+                  <td>STDIO + HTTP</td>
+                  <td><code>~/.claude/settings.json</code></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="text-blue-300 font-semibold">Gemini CLI</span>
+                  </td>
+                  <td>TypeScript/Node</td>
+                  <td>STDIO + HTTP</td>
+                  <td><code>settings.json</code></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="text-accent-400 font-semibold">Orcha MCP</span>
+                  </td>
+                  <td>Python</td>
+                  <td>STDIO + HTTP</td>
+                  <td><code>orcha.json</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>O loop interno comum a todas:</p>
+          <ol>
+            <li>Ler config e conectar aos MCP servers configurados</li>
+            <li>Fazer <code>tools/list</code> em cada server</li>
+            <li>
+              Montar lista unificada e enviar ao LLM com a pergunta do usuário
+            </li>
+            <li>Interceptar <code>tool_use</code> do LLM</li>
+            <li>Rotear para o server correto via <code>tools/call</code></li>
+            <li>
+              Inserir resultado no histórico e repetir até o LLM dar uma
+              resposta final
+            </li>
+          </ol>
+          <div
+            class="flex items-start gap-3 p-4 rounded-xl border border-accent-800 bg-accent-900/20 mt-4"
+          >
+            <span class="text-accent-400 text-lg shrink-0">✦</span>
+            <p class="!mb-0 !text-accent-200/70 text-sm">
+              A diferença do <code>orcha-mcp</code> é que a flag
+              <code>--verbose</code> expõe cada uma dessas etapas com as
+              mensagens JSON-RPC reais.
+            </p>
+          </div>
+        </section>
 
-      <!-- Módulos -->
-      <section id="modulos">
-        <h2>Estrutura de Módulos</h2>
-        <pre><code class="language-plaintext">orcha/
+        <!-- Módulos -->
+        <section id="modulos">
+          <h2>Estrutura de Módulos</h2>
+          <pre><code class="language-plaintext">orcha/
 ├── cli.py          # Entry point (Typer): define comandos list-tools, call, chat
 ├── config.py       # Lê orcha.json, valida schema, retorna dataclasses
 ├── host.py         # Orquestrador: inicializa clients, agrega tools, loop LLM
@@ -458,112 +873,144 @@ response = await llm.complete(
 │   └── anthropic.py# Implementação Anthropic: messages API com tool_use
 └── inspector.py    # Formata e printa JSON-RPC no terminal (modo --verbose)</code></pre>
 
-        <h3 id="fluxo-dependencias">Fluxo de dependências</h3>
-        <pre><code class="language-plaintext">cli.py
+          <h3 id="fluxo-dependencias">Fluxo de dependências</h3>
+          <pre><code class="language-plaintext">cli.py
   └── host.py
         ├── config.py
         ├── client.py (N instâncias)
         │     └── transport/stdio.py  ou  transport/http.py
         ├── llm/anthropic.py
         └── inspector.py (opcional, ativado por --verbose)</code></pre>
-      </section>
+        </section>
 
-      <!-- Decisões de design -->
-      <section id="design">
-        <h2>Decisões de Design</h2>
+        <!-- Decisões de design -->
+        <section id="design">
+          <h2>Decisões de Design</h2>
 
-        <h3 id="por-que-python">Por que Python?</h3>
-        <ul>
-          <li>SDK oficial MCP (<code>mcp</code>) tem suporte Python de primeira classe</li>
-          <li><code>anthropic</code> SDK Python é maduro e tem suporte nativo a <code>tool_use</code></li>
-          <li><code>asyncio</code> lida bem com múltiplas conexões STDIO simultâneas</li>
-          <li>Mais fácil de inspecionar e experimentar para aprendizado</li>
-        </ul>
+          <h3 id="por-que-python">Por que Python?</h3>
+          <ul>
+            <li>
+              SDK oficial MCP (<code>mcp</code>) tem suporte Python de primeira
+              classe
+            </li>
+            <li>
+              <code>anthropic</code> SDK Python é maduro e tem suporte nativo a
+              <code>tool_use</code>
+            </li>
+            <li>
+              <code>asyncio</code> lida bem com múltiplas conexões STDIO
+              simultâneas
+            </li>
+            <li>Mais fácil de inspecionar e experimentar para aprendizado</li>
+          </ul>
 
-        <h3 id="namespace">Por que namespace <code>server_toolname</code>?</h3>
-        <p>
-          OpenCode e Claude Code registram tools com o nome do server como prefixo para evitar colisões quando múltiplos servers expõem tools com mesmo nome. O <code>orcha-mcp</code> segue a mesma convenção: <code>filesystem_read_file</code>, <code>fetch_fetch</code>, etc.
-        </p>
+          <h3 id="namespace">
+            Por que namespace <code>server_toolname</code>?
+          </h3>
+          <p>
+            OpenCode e Claude Code registram tools com o nome do server como
+            prefixo para evitar colisões quando múltiplos servers expõem tools
+            com mesmo nome. O <code>orcha-mcp</code> segue a mesma convenção:
+            <code>filesystem_read_file</code>, <code>fetch_fetch</code>, etc.
+          </p>
 
-        <h3 id="orcha-json">Por que <code>orcha.json</code> e não <code>.env</code>?</h3>
-        <p>
-          Seguindo o padrão estabelecido por OpenCode (<code>opencode.json</code>), Claude Code (<code>settings.json</code>) e outros. Facilita versionar a configuração dos servers junto ao projeto.
-        </p>
-      </section>
+          <h3 id="orcha-json">
+            Por que <code>orcha.json</code> e não <code>.env</code>?
+          </h3>
+          <p>
+            Seguindo o padrão estabelecido por OpenCode
+            (<code>opencode.json</code>), Claude Code
+            (<code>settings.json</code>) e outros. Facilita versionar a
+            configuração dos servers junto ao projeto.
+          </p>
+        </section>
 
-      <footer class="mt-16 pt-8 border-t border-surface-200 text-center text-sm text-surface-400">
-        <p>orcha-mcp — projeto educacional sobre o Model Context Protocol</p>
-        <div class="flex justify-center gap-4 mt-3">
-          <a href="index.html" class="hover:text-accent-400 transition">Visão Geral</a>
-          <span>·</span>
-          <a href="backlog.html" class="hover:text-accent-400 transition">Backlog</a>
-          <span>·</span>
-          <a href="mvp.html" class="hover:text-accent-400 transition">MVP</a>
-        </div>
-      </footer>
+        <footer
+          class="mt-16 pt-8 border-t border-surface-200 text-center text-sm text-surface-400"
+        >
+          <p>orcha-mcp — projeto educacional sobre o Model Context Protocol</p>
+          <div class="flex justify-center gap-4 mt-3">
+            <a href="index.html" class="hover:text-accent-400 transition"
+              >Visão Geral</a
+            >
+            <span>·</span>
+            <a href="backlog.html" class="hover:text-accent-400 transition"
+              >Backlog</a
+            >
+            <span>·</span>
+            <a href="mvp.html" class="hover:text-accent-400 transition">MVP</a>
+          </div>
+        </footer>
+      </main>
+    </div>
 
-    </main>
-  </div>
+    <script>
+      hljs.highlightAll();
 
-  <script>
-    hljs.highlightAll();
-
-    document.querySelectorAll('pre').forEach(pre => {
-      const btn = document.createElement('button');
-      btn.className = 'copy-btn';
-      btn.textContent = 'copiar';
-      pre.appendChild(btn);
-      btn.addEventListener('click', () => {
-        const code = pre.querySelector('code');
-        navigator.clipboard.writeText(code.innerText).then(() => {
-          btn.textContent = 'copiado!';
-          btn.classList.add('copied');
-          setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 2000);
+      document.querySelectorAll("pre").forEach((pre) => {
+        const btn = document.createElement("button");
+        btn.className = "copy-btn";
+        btn.textContent = "copiar";
+        pre.appendChild(btn);
+        btn.addEventListener("click", () => {
+          const code = pre.querySelector("code");
+          navigator.clipboard.writeText(code.innerText).then(() => {
+            btn.textContent = "copiado!";
+            btn.classList.add("copied");
+            setTimeout(() => {
+              btn.textContent = "copiar";
+              btn.classList.remove("copied");
+            }, 2000);
+          });
         });
       });
-    });
 
-    const sections = document.querySelectorAll('section[id]');
-    const nav = document.getElementById('sidebar-nav');
-    const headingMap = {
-      'visao-geral': 'Visão Geral',
-      'participantes': 'Participantes',
-      'camadas': 'Camadas do Protocolo',
-      'fluxo-sessao': 'Fluxo de Sessão',
-      'primitivos': 'Primitivos MCP',
-      'comparativo': 'Comparativo',
-      'modulos': 'Estrutura de Módulos',
-      'design': 'Decisões de Design',
-    };
-    sections.forEach(s => {
-      const a = document.createElement('a');
-      a.href = '#' + s.id;
-      a.className = 'sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded';
-      a.textContent = headingMap[s.id] || s.id;
-      nav.appendChild(a);
-    });
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        const link = nav.querySelector(`a[href="#${e.target.id}"]`);
-        if (!link) return;
-        if (e.isIntersecting) {
-          nav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-          link.classList.add('active');
-        }
+      const sections = document.querySelectorAll("section[id]");
+      const nav = document.getElementById("sidebar-nav");
+      const headingMap = {
+        "visao-geral": "Visão Geral",
+        participantes: "Participantes",
+        camadas: "Camadas do Protocolo",
+        "fluxo-sessao": "Fluxo de Sessão",
+        primitivos: "Primitivos MCP",
+        comparativo: "Comparativo",
+        modulos: "Estrutura de Módulos",
+        design: "Decisões de Design",
+      };
+      sections.forEach((s) => {
+        const a = document.createElement("a");
+        a.href = "#" + s.id;
+        a.className = "sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded";
+        a.textContent = headingMap[s.id] || s.id;
+        nav.appendChild(a);
       });
-    }, { rootMargin: '-20% 0px -70% 0px' });
-    sections.forEach(s => observer.observe(s));
 
-    const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const iconOpen = document.getElementById('icon-open');
-    const iconClose = document.getElementById('icon-close');
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-      iconOpen.classList.toggle('hidden');
-      iconClose.classList.toggle('hidden');
-    });
-  </script>
-</body>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            const link = nav.querySelector(`a[href="#${e.target.id}"]`);
+            if (!link) return;
+            if (e.isIntersecting) {
+              nav
+                .querySelectorAll("a")
+                .forEach((a) => a.classList.remove("active"));
+              link.classList.add("active");
+            }
+          });
+        },
+        { rootMargin: "-20% 0px -70% 0px" },
+      );
+      sections.forEach((s) => observer.observe(s));
+
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const iconOpen = document.getElementById("icon-open");
+      const iconClose = document.getElementById("icon-close");
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+        iconOpen.classList.toggle("hidden");
+        iconClose.classList.toggle("hidden");
+      });
+    </script>
+  </body>
 </html>
