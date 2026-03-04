@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backlog — orcha-mcp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            accent: { 50:'#faf5ff',100:'#f3e8ff',200:'#e9d5ff',300:'#d8b4fe',400:'#c084fc',500:'#a855f7',600:'#9333ea',700:'#7e22ce',800:'#6b21a8',900:'#581c87' },
+            surface: { DEFAULT:'#0d1117',100:'#161b22',200:'#21262d',300:'#30363d',400:'#484f58' }
+          },
+          fontFamily: { sans:['Inter','sans-serif'], mono:['JetBrains Mono','monospace'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', sans-serif; }
+    .sidebar-link.active { color: #a855f7; border-left-color: #a855f7; }
+    .sidebar-link { border-left: 2px solid transparent; transition: all 0.15s; }
+    .sidebar-link:hover { color: #c084fc; border-left-color: #6b21a8; }
+    table { border-collapse: collapse; width: 100%; }
+    th { background: #21262d; color: #a855f7; text-align: left; padding: 0.625rem 1rem; font-weight: 600; font-size: 0.875rem; }
+    td { padding: 0.625rem 1rem; border-top: 1px solid #30363d; font-size: 0.875rem; color: #c9d1d9; }
+    tr:hover td { background: #161b22; }
+    code:not(.hljs) { background: #21262d; color: #d2a8ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .nav-active { color: #a855f7 !important; }
+    h1,h2,h3,h4 { scroll-margin-top: 5rem; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #161b22; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+    .prose-content h2 { font-size: 1.5rem; font-weight: 700; color: #e6edf3; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #21262d; }
+    .prose-content h3 { font-size: 1.125rem; font-weight: 600; color: #c9d1d9; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+    .prose-content p { color: #8b949e; line-height: 1.7; margin-bottom: 1rem; }
+    .prose-content ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+    .prose-content ul li { color: #8b949e; margin-bottom: 0.375rem; line-height: 1.6; }
+    .prose-content a { color: #a855f7; text-decoration: none; }
+    .prose-content a:hover { color: #c084fc; text-decoration: underline; }
+    .us-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 1.25rem; transition: border-color 0.15s; }
+    .us-card:hover { border-color: #484f58; }
+    .us-card.mvp { border-left: 3px solid #a855f7; }
+    .us-card.future { border-left: 3px solid #484f58; opacity: 0.75; }
+    .badge-alta { background: #4d1a1a; color: #f87171; border: 1px solid #7f1d1d; }
+    .badge-media { background: #3d3000; color: #fbbf24; border: 1px solid #78350f; }
+    .badge-baixa { background: #1e2a2a; color: #6ee7b7; border: 1px solid #065f46; }
+    .badge-mvp { background: #2d1657; color: #c084fc; border: 1px solid #6b21a8; }
+    .badge-futuro { background: #1f2937; color: #9ca3af; border: 1px solid #374151; }
+    .checkbox { width: 16px; height: 16px; border: 2px solid #30363d; border-radius: 4px; display: inline-block; flex-shrink: 0; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="fixed top-0 left-0 right-0 z-50 border-b border-surface-200" style="background:#0d1117ee;backdrop-filter:blur(12px);">
+    <div class="max-w-screen-2xl mx-auto flex items-center justify-between px-4 h-14">
+      <div class="flex items-center gap-3">
+        <button id="menu-btn" class="md:hidden p-1.5 rounded text-gray-400 hover:text-white hover:bg-surface-200 transition">
+          <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <a href="index.html" class="flex items-center gap-2">
+          <span class="font-mono text-accent-400 font-bold text-lg">orcha-mcp</span>
+          <span class="hidden sm:inline text-surface-400 text-sm">/</span>
+          <span class="hidden sm:inline text-gray-400 text-sm">docs</span>
+        </a>
+      </div>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="index.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">Visão Geral</a>
+        <a href="architecture.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">Arquitetura</a>
+        <a href="backlog.html" class="nav-active px-3 py-1.5 rounded text-sm font-medium transition hover:bg-surface-200">Backlog</a>
+        <a href="mvp.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">MVP</a>
+      </nav>
+      <a href="https://github.com/seu-usuario/orcha-mcp" target="_blank" class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition px-3 py-1.5 rounded hover:bg-surface-200">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-surface-200 px-4 py-3 flex flex-col gap-1">
+      <a href="index.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">Visão Geral</a>
+      <a href="architecture.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">Arquitetura</a>
+      <a href="backlog.html" class="block px-3 py-2 rounded text-sm font-medium text-accent-400 bg-surface-100">Backlog</a>
+      <a href="mvp.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">MVP</a>
+    </div>
+  </header>
+
+  <div class="max-w-screen-2xl mx-auto flex pt-14">
+    <!-- Sidebar -->
+    <aside class="hidden md:block fixed top-14 left-0 bottom-0 w-64 overflow-y-auto border-r border-surface-200 px-4 py-6" style="background:#0d1117;">
+      <p class="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-3 px-2">Épicos</p>
+      <nav class="flex flex-col gap-0.5">
+        <a href="#epicos" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">Visão geral</a>
+        <a href="#e1" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E1 — Core MCP Client</a>
+        <a href="#e2" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E2 — Configuração</a>
+        <a href="#e3" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E3 — Tool Discovery</a>
+        <a href="#e4" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E4 — Tool Execution</a>
+        <a href="#e5" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E5 — Loop LLM</a>
+        <a href="#e6" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E6 — Debug</a>
+        <div class="border-t border-surface-200 my-2"></div>
+        <p class="text-xs text-surface-400 px-3 mb-1">Pós-MVP</p>
+        <a href="#e7" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E7 — Multi-agente</a>
+        <a href="#e8" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E8 — Resources</a>
+        <a href="#e9" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">E9 — Comparativo</a>
+        <div class="border-t border-surface-200 my-2"></div>
+        <a href="#priorizacao" class="sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded">Priorização</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 md:ml-64 min-w-0 px-6 md:px-12 py-10 max-w-4xl prose-content">
+
+      <div class="mb-10">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-0.5 rounded-full border border-accent-700">backlog</span>
+        </div>
+        <h1 class="text-4xl font-bold text-white mb-4">Backlog</h1>
+        <p class="text-lg text-gray-400 leading-relaxed max-w-2xl">
+          Backlog priorizado por épicos. Histórias do MVP estão marcadas com <span class="badge-mvp text-xs px-2 py-0.5 rounded-full font-mono inline-block">MVP</span>. Leia o <a href="mvp.html">escopo do MVP</a> para entender o que entra na primeira entrega.
+        </p>
+        <!-- Stats -->
+        <div class="flex flex-wrap gap-3 mt-6">
+          <div class="flex items-center gap-2 bg-surface-100 border border-surface-200 rounded-lg px-4 py-2">
+            <span class="text-2xl font-bold text-accent-400">9</span>
+            <span class="text-sm text-gray-500">épicos</span>
+          </div>
+          <div class="flex items-center gap-2 bg-surface-100 border border-surface-200 rounded-lg px-4 py-2">
+            <span class="text-2xl font-bold text-accent-400">23</span>
+            <span class="text-sm text-gray-500">histórias</span>
+          </div>
+          <div class="flex items-center gap-2 bg-surface-100 border border-surface-200 rounded-lg px-4 py-2">
+            <span class="text-2xl font-bold text-accent-400">19</span>
+            <span class="text-sm text-gray-500">no MVP</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-surface-200 my-8" />
+
+      <!-- Epicos overview -->
+      <section id="epicos">
+        <h2>Épicos</h2>
+        <div class="rounded-xl border border-surface-200 overflow-hidden my-4">
+          <table>
+            <thead><tr><th>ID</th><th>Nome</th><th>Descrição</th><th>MVP?</th></tr></thead>
+            <tbody>
+              <tr><td class="font-mono text-accent-400">E1</td><td><strong class="text-gray-300">Core MCP Client</strong></td><td>Conexão com servers, lifecycle, capability negotiation</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td></tr>
+              <tr><td class="font-mono text-accent-400">E2</td><td><strong class="text-gray-300">Configuração</strong></td><td>Leitura e validação do <code>orcha.json</code></td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td></tr>
+              <tr><td class="font-mono text-accent-400">E3</td><td><strong class="text-gray-300">Tool Discovery</strong></td><td><code>tools/list</code>, exibição formatada, logs JSON-RPC</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td></tr>
+              <tr><td class="font-mono text-accent-400">E4</td><td><strong class="text-gray-300">Tool Execution</strong></td><td><code>tools/call</code>, roteamento multi-server, resultado</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td></tr>
+              <tr><td class="font-mono text-accent-400">E5</td><td><strong class="text-gray-300">Loop LLM</strong></td><td>LLM real decide tools, loop até resposta final</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td></tr>
+              <tr><td class="font-mono text-accent-400">E6</td><td><strong class="text-gray-300">Debug / Inspeção</strong></td><td><code>--verbose</code>, <code>--dry-run</code>, inspeção raw</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td></tr>
+              <tr><td class="font-mono text-surface-400">E7</td><td><span class="text-gray-500">Multi-agente</span></td><td class="text-gray-600">Um agente delega tarefas a sub-agentes via MCP</td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Pós-MVP</span></td></tr>
+              <tr><td class="font-mono text-surface-400">E8</td><td><span class="text-gray-500">Resources e Prompts</span></td><td class="text-gray-600">Primitivos <code>resources/*</code> e <code>prompts/*</code></td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Pós-MVP</span></td></tr>
+              <tr><td class="font-mono text-surface-400">E9</td><td><span class="text-gray-500">Comparativo</span></td><td class="text-gray-600">Side-by-side com OpenCode / Claude Code</td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Pós-MVP</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- E1 -->
+      <section id="e1">
+        <h2><span class="text-accent-500 font-mono text-base mr-2">E1</span> Core MCP Client</h2>
+        <p>Implementação do MCP Client com lifecycle completo: inicialização, capability negotiation e encerramento de conexão.</p>
+
+        <div class="flex flex-col gap-4 mt-4">
+          <!-- US01 -->
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US01</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Conexão STDIO com server local</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mb-3 italic">Como desenvolvedor, quero conectar o orcha-mcp a um MCP server local via STDIO, para ver o ciclo de inicialização JSON-RPC acontecendo.</p>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Inicia o processo do server como subprocesso</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Envia <code>initialize</code> com <code>protocolVersion</code> e <code>clientInfo</code></li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Recebe resposta com capabilities do server</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Envia <code>notifications/initialized</code></li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Conexão encerrada graciosamente ao finalizar</li>
+            </ul>
+          </div>
+
+          <!-- US02 -->
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US02</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Conexão HTTP com server remoto</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mb-3 italic">Como desenvolvedor, quero conectar o orcha-mcp a um MCP server remoto via HTTP, para comparar o comportamento entre transports.</p>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Faz POST para a URL do server com mensagem <code>initialize</code></li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Suporta headers customizados (Bearer token)</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Lida com respostas síncronas (200 JSON) e SSE</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Timeout configurável (padrão: 10s)</li>
+            </ul>
+          </div>
+
+          <!-- US03 -->
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US03</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Exibição da capability negotiation</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mb-3 italic">Como desenvolvedor, quero ver no terminal as capabilities negociadas durante o handshake.</p>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Exibe resumo formatado: nome, versão, capabilities</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Com <code>--verbose</code>, exibe JSON-RPC raw do initialize</li>
+            </ul>
+            <div class="mt-3 bg-surface-200 rounded-lg p-3 font-mono text-xs text-gray-400">
+              ✓ filesystem  v0.6.2  tools(listChanged=true)<br>
+              ✓ fetch       v0.1.0  tools
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- E2 -->
+      <section id="e2">
+        <h2><span class="text-accent-500 font-mono text-base mr-2">E2</span> Configuração</h2>
+        <p>Leitura, validação e gerenciamento do arquivo <code>orcha.json</code>.</p>
+        <div class="flex flex-col gap-4 mt-4">
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US04</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Configuração de múltiplos servers via JSON</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span><code>orcha.json</code> lido da raiz por padrão</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Suporte a <code>type: "local"</code> e <code>type: "remote"</code></li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Campos: <code>command</code>, <code>url</code>, <code>enabled</code>, <code>environment</code></li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Erros de schema com mensagem clara</li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US05</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Ativar e desativar servers individualmente</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Server com <code>"enabled": false</code> não é inicializado</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Flag <code>--server &lt;nome&gt;</code> restringe a operação</li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US06</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Path alternativo de config</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-media text-xs px-2 py-0.5 rounded-full">Média</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Flag <code>--config &lt;path&gt;</code> aceita absoluto ou relativo</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Erro claro se arquivo não existir</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- E3 -->
+      <section id="e3">
+        <h2><span class="text-accent-500 font-mono text-base mr-2">E3</span> Tool Discovery</h2>
+        <p>Descoberta e exibição das ferramentas disponíveis em todos os servers conectados.</p>
+        <div class="flex flex-col gap-4 mt-4">
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US07</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Listar todas as tools disponíveis</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Conecta em todos os servers habilitados</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Tools agrupadas por server com namespace</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Exibe contagem total ao final</li>
+            </ul>
+            <div class="mt-3 bg-surface-200 rounded-lg p-3 font-mono text-xs text-gray-400 leading-relaxed">
+              Server: <span class="text-accent-400">filesystem</span> (5 tools)<br>
+              &nbsp;&nbsp;filesystem_read_file &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Read the complete contents of a file<br>
+              &nbsp;&nbsp;filesystem_write_file &nbsp;&nbsp;&nbsp;&nbsp;Create a new file or overwrite<br>
+              <br>
+              Server: <span class="text-accent-400">fetch</span> (2 tools)<br>
+              &nbsp;&nbsp;fetch_fetch &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetches a URL from the internet<br>
+              <br>
+              Total: <span class="text-green-400">7 tools disponíveis</span>
+            </div>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US08</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Inspecionar o JSON-RPC do tools/list</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Com <code>--verbose</code>, imprime mensagem e resposta pretty-printed</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Prefixos de direção: <code>→ HOST→SERVER</code> / <code>← SERVER→HOST</code></li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US09</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Inspecionar o inputSchema de uma tool</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-media text-xs px-2 py-0.5 rounded-full">Média</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Comando <code>orcha describe &lt;tool_name&gt;</code> exibe inputSchema completo</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Indica campos <code>required</code> e opcionais</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- E4 -->
+      <section id="e4">
+        <h2><span class="text-accent-500 font-mono text-base mr-2">E4</span> Tool Execution</h2>
+        <p>Execução direta de tools via CLI, sem passar pelo LLM.</p>
+        <div class="flex flex-col gap-4 mt-4">
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US10</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Executar uma tool diretamente</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Aceita nome com namespace (<code>filesystem_read_file</code>)</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Argumentos como JSON string via <code>--args</code></li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Retorna código 1 se a tool retornar erro</li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US11</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Roteamento automático para o server correto</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Roteamento pelo prefixo do namespace (<code>filesystem_*</code>)</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Erro claro se tool não for encontrada</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Erro claro se houver ambiguidade</li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US12</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Inspecionar JSON-RPC do tools/call</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Com <code>--verbose</code>, imprime request e response do <code>tools/call</code></li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US13</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Modo dry-run</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-media text-xs px-2 py-0.5 rounded-full">Média</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Exibe JSON-RPC que seria enviado sem executar</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Não faz conexão real com servers</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- E5 -->
+      <section id="e5">
+        <h2><span class="text-accent-500 font-mono text-base mr-2">E5</span> Loop LLM</h2>
+        <p>Integração com LLM real para orquestração completa.</p>
+        <div class="flex flex-col gap-4 mt-4">
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US14</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Chat com uma pergunta única</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Detecta <code>tool_use</code> e executa via MCP</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Repete até o LLM dar resposta final</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Exibe resposta final formatada</li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US15</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Exibir cada etapa do loop com --verbose</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <div class="mt-3 bg-surface-200 rounded-lg p-3 font-mono text-xs text-gray-400 leading-relaxed">
+              <span class="text-accent-400">[STEP 1]</span> Enviando ao LLM (claude-3-5-sonnet-20241022)<br>
+              &nbsp;&nbsp;→ 1 mensagem(s) | 7 tools disponíveis<br>
+              <span class="text-accent-400">[STEP 2]</span> LLM respondeu com tool_use<br>
+              &nbsp;&nbsp;→ Tool: <span class="text-blue-400">filesystem_read_file</span><br>
+              <span class="text-accent-400">[STEP 3]</span> Executando via MCP<br>
+              &nbsp;&nbsp;→ HOST→SERVER: <span class="text-yellow-400">{"jsonrpc":"2.0","method":"tools/call",...}</span><br>
+              <span class="text-accent-400">[STEP 5]</span> Resposta final<br>
+              &nbsp;&nbsp;O README.md contém informações sobre...
+            </div>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US16</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Configuração do provider LLM</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Suporte a <code>provider: "anthropic"</code> com <code>ANTHROPIC_API_KEY</code></li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Campo <code>model</code> configurável</li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US17</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Chat interativo (REPL)</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-media text-xs px-2 py-0.5 rounded-full">Média</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Loop com prompt <code>&gt;</code> no terminal</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Histórico mantido entre turnos</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span><code>Ctrl+C</code> encerra graciosamente</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- E6 -->
+      <section id="e6">
+        <h2><span class="text-accent-500 font-mono text-base mr-2">E6</span> Debug / Inspeção</h2>
+        <p>Ferramentas transversais para inspeção do protocolo, ativas em todos os comandos via flags.</p>
+        <div class="flex flex-col gap-4 mt-4">
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US18</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Flag --verbose global</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Funciona em <code>list-tools</code>, <code>call</code>, <code>chat</code> e <code>describe</code></li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Mensagens coloridas: azul (requests), verde (responses), amarelo (notifications)</li>
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>JSON pretty-printed com indentação de 2 espaços</li>
+            </ul>
+          </div>
+
+          <div class="us-card mvp">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-accent-400 bg-accent-900/50 px-2 py-0.5 rounded">US19</span>
+                <h4 class="font-semibold text-gray-300 text-sm">Sumário de sessão ao encerrar</h4>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="badge-baixa text-xs px-2 py-0.5 rounded-full">Baixa</span>
+                <span class="badge-mvp text-xs px-2 py-0.5 rounded-full">MVP</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-500"><span class="checkbox shrink-0 mt-0.5"></span>Exibe: servers conectados, tools descobertas, tools chamadas, tempo total</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pós-MVP -->
+      <section id="e7">
+        <h2><span class="text-surface-400 font-mono text-base mr-2">E7</span> Orquestração Multi-Agente <span class="text-sm font-normal text-surface-400 ml-2">pós-MVP</span></h2>
+        <div class="flex flex-col gap-4 mt-4">
+          <div class="us-card future">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-surface-400 bg-surface-200 px-2 py-0.5 rounded">US20</span>
+                <h4 class="font-semibold text-gray-500 text-sm">Agente delegando para sub-agente via MCP</h4>
+              </div>
+              <span class="badge-futuro text-xs px-2 py-0.5 rounded-full shrink-0">Alta (futuro)</span>
+            </div>
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2 text-xs text-gray-600"><span class="checkbox shrink-0 mt-0.5"></span>Orquestrador inicia sub-processo <code>orcha chat</code> como MCP server</li>
+              <li class="flex items-start gap-2 text-xs text-gray-600"><span class="checkbox shrink-0 mt-0.5"></span>Sub-agente expõe tool <code>run_task(instruction)</code> via MCP</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="e8">
+        <h2><span class="text-surface-400 font-mono text-base mr-2">E8</span> Resources e Prompts <span class="text-sm font-normal text-surface-400 ml-2">pós-MVP</span></h2>
+        <div class="flex flex-col gap-4 mt-4">
+          <div class="us-card future">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-surface-400 bg-surface-200 px-2 py-0.5 rounded">US21</span>
+                <h4 class="font-semibold text-gray-500 text-sm">Listar e ler Resources</h4>
+              </div>
+              <span class="badge-futuro text-xs px-2 py-0.5 rounded-full shrink-0">Média (futuro)</span>
+            </div>
+            <p class="text-xs text-gray-600">Comandos <code>orcha list-resources</code> e <code>orcha read-resource &lt;uri&gt;</code></p>
+          </div>
+          <div class="us-card future">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-surface-400 bg-surface-200 px-2 py-0.5 rounded">US22</span>
+                <h4 class="font-semibold text-gray-500 text-sm">Listar e usar Prompts</h4>
+              </div>
+              <span class="badge-futuro text-xs px-2 py-0.5 rounded-full shrink-0">Média (futuro)</span>
+            </div>
+            <p class="text-xs text-gray-600">Comandos <code>orcha list-prompts</code> e <code>orcha get-prompt &lt;nome&gt;</code></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="e9">
+        <h2><span class="text-surface-400 font-mono text-base mr-2">E9</span> Comparativo entre Ferramentas <span class="text-sm font-normal text-surface-400 ml-2">pós-MVP</span></h2>
+        <div class="flex flex-col gap-4 mt-4">
+          <div class="us-card future">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-surface-400 bg-surface-200 px-2 py-0.5 rounded">US23</span>
+                <h4 class="font-semibold text-gray-500 text-sm">Modo "side-by-side"</h4>
+              </div>
+              <span class="badge-futuro text-xs px-2 py-0.5 rounded-full shrink-0">Baixa (futuro)</span>
+            </div>
+            <p class="text-xs text-gray-600">Executa a mesma pergunta no <code>orcha-mcp</code> e compara com log de outra ferramenta lado a lado.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Priorização -->
+      <section id="priorizacao">
+        <h2>Resumo de Priorização</h2>
+        <div class="rounded-xl border border-surface-200 overflow-hidden my-4">
+          <table>
+            <thead><tr><th>História</th><th>Épico</th><th>MVP?</th><th>Prioridade</th></tr></thead>
+            <tbody>
+              <tr><td class="font-mono text-accent-400">US01</td><td>E1</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US02</td><td>E1</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US03</td><td>E1</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US04</td><td>E2</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US05</td><td>E2</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US06</td><td>E2</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-media text-xs px-2 py-0.5 rounded-full">Média</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US07</td><td>E3</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US08</td><td>E3</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US09</td><td>E3</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-media text-xs px-2 py-0.5 rounded-full">Média</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US10</td><td>E4</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US11</td><td>E4</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US12</td><td>E4</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US13</td><td>E4</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-media text-xs px-2 py-0.5 rounded-full">Média</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US14</td><td>E5</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US15</td><td>E5</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US16</td><td>E5</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US17</td><td>E5</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-media text-xs px-2 py-0.5 rounded-full">Média</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US18</td><td>E6</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full">Alta</span></td></tr>
+              <tr><td class="font-mono text-accent-400">US19</td><td>E6</td><td><span class="badge-mvp text-xs px-2 py-0.5 rounded-full">Sim</span></td><td><span class="badge-baixa text-xs px-2 py-0.5 rounded-full">Baixa</span></td></tr>
+              <tr><td class="font-mono text-surface-400">US20</td><td>E7</td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Não</span></td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Alta (futuro)</span></td></tr>
+              <tr><td class="font-mono text-surface-400">US21</td><td>E8</td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Não</span></td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Média (futuro)</span></td></tr>
+              <tr><td class="font-mono text-surface-400">US22</td><td>E8</td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Não</span></td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Média (futuro)</span></td></tr>
+              <tr><td class="font-mono text-surface-400">US23</td><td>E9</td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Não</span></td><td><span class="badge-futuro text-xs px-2 py-0.5 rounded-full">Baixa (futuro)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="mt-16 pt-8 border-t border-surface-200 text-center text-sm text-surface-400">
+        <p>orcha-mcp — projeto educacional sobre o Model Context Protocol</p>
+        <div class="flex justify-center gap-4 mt-3">
+          <a href="index.html" class="hover:text-accent-400 transition">Visão Geral</a>
+          <span>·</span>
+          <a href="architecture.html" class="hover:text-accent-400 transition">Arquitetura</a>
+          <span>·</span>
+          <a href="mvp.html" class="hover:text-accent-400 transition">MVP</a>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    // Scroll-spy for manually defined sidebar
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    const sections = document.querySelectorAll('section[id]');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        const link = document.querySelector(`.sidebar-link[href="#${e.target.id}"]`);
+        if (!link) return;
+        if (e.isIntersecting) {
+          sidebarLinks.forEach(a => a.classList.remove('active'));
+          link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconOpen = document.getElementById('icon-open');
+    const iconClose = document.getElementById('icon-close');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      iconOpen.classList.toggle('hidden');
+      iconClose.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>

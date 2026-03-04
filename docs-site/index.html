@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>orcha-mcp — Documentação</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            accent: {
+              50:  '#faf5ff',
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+              800: '#6b21a8',
+              900: '#581c87',
+            },
+            surface: {
+              DEFAULT: '#0d1117',
+              100: '#161b22',
+              200: '#21262d',
+              300: '#30363d',
+              400: '#484f58',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; font-family: 'Inter', sans-serif; }
+    .sidebar-link.active { color: #a855f7; border-left-color: #a855f7; }
+    .sidebar-link { border-left: 2px solid transparent; transition: all 0.15s; }
+    .sidebar-link:hover { color: #c084fc; border-left-color: #6b21a8; }
+    pre { position: relative; }
+    .copy-btn {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      background: #30363d; color: #8b949e; border: 1px solid #484f58;
+      border-radius: 6px; padding: 2px 8px; font-size: 12px; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all 0.15s;
+    }
+    .copy-btn:hover { background: #6b21a8; color: #fff; border-color: #a855f7; }
+    .copy-btn.copied { background: #238636; color: #fff; border-color: #2ea043; }
+    .hljs { background: #161b22 !important; border-radius: 8px; padding: 1.25rem !important; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th { background: #21262d; color: #a855f7; text-align: left; padding: 0.625rem 1rem; font-weight: 600; font-size: 0.875rem; }
+    td { padding: 0.625rem 1rem; border-top: 1px solid #30363d; font-size: 0.875rem; color: #c9d1d9; }
+    tr:hover td { background: #161b22; }
+    code:not(.hljs) { background: #21262d; color: #d2a8ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+    .nav-active { color: #a855f7 !important; }
+    h1,h2,h3,h4 { scroll-margin-top: 5rem; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #161b22; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+    .prose-content h2 { font-size: 1.5rem; font-weight: 700; color: #e6edf3; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #21262d; }
+    .prose-content h3 { font-size: 1.125rem; font-weight: 600; color: #c9d1d9; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+    .prose-content p { color: #8b949e; line-height: 1.7; margin-bottom: 1rem; }
+    .prose-content ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+    .prose-content ul li { color: #8b949e; margin-bottom: 0.375rem; line-height: 1.6; }
+    .prose-content a { color: #a855f7; text-decoration: none; }
+    .prose-content a:hover { color: #c084fc; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="fixed top-0 left-0 right-0 z-50 border-b border-surface-200" style="background:#0d1117ee;backdrop-filter:blur(12px);">
+    <div class="max-w-screen-2xl mx-auto flex items-center justify-between px-4 h-14">
+      <div class="flex items-center gap-3">
+        <button id="menu-btn" class="md:hidden p-1.5 rounded text-gray-400 hover:text-white hover:bg-surface-200 transition">
+          <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <a href="index.html" class="flex items-center gap-2">
+          <span class="font-mono text-accent-400 font-bold text-lg">orcha-mcp</span>
+          <span class="hidden sm:inline text-surface-400 text-sm">/</span>
+          <span class="hidden sm:inline text-gray-400 text-sm">docs</span>
+        </a>
+      </div>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="index.html" class="nav-active px-3 py-1.5 rounded text-sm font-medium transition hover:bg-surface-200">Visão Geral</a>
+        <a href="architecture.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">Arquitetura</a>
+        <a href="backlog.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">Backlog</a>
+        <a href="mvp.html" class="px-3 py-1.5 rounded text-sm font-medium text-gray-400 transition hover:bg-surface-200 hover:text-white">MVP</a>
+      </nav>
+      <a href="https://github.com/seu-usuario/orcha-mcp" target="_blank" class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition px-3 py-1.5 rounded hover:bg-surface-200">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-surface-200 px-4 py-3 flex flex-col gap-1">
+      <a href="index.html" class="block px-3 py-2 rounded text-sm font-medium text-accent-400 bg-surface-100">Visão Geral</a>
+      <a href="architecture.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">Arquitetura</a>
+      <a href="backlog.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">Backlog</a>
+      <a href="mvp.html" class="block px-3 py-2 rounded text-sm font-medium text-gray-400 hover:bg-surface-200 hover:text-white">MVP</a>
+    </div>
+  </header>
+
+  <div class="max-w-screen-2xl mx-auto flex pt-14">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="hidden md:block fixed top-14 left-0 bottom-0 w-64 overflow-y-auto border-r border-surface-200 px-4 py-6" style="background:#0d1117;">
+      <p class="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-3 px-2">Nesta página</p>
+      <nav id="sidebar-nav" class="flex flex-col gap-0.5"></nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 md:ml-64 min-w-0 px-6 md:px-12 py-10 max-w-4xl prose-content">
+
+      <!-- Hero -->
+      <div class="mb-10">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-0.5 rounded-full border border-accent-700">v0.1.0-mvp</span>
+          <span class="text-xs text-surface-400">Python 3.11+</span>
+        </div>
+        <h1 class="text-4xl font-bold text-white mb-4">orcha-mcp</h1>
+        <p class="text-lg text-gray-400 leading-relaxed max-w-2xl">
+          Um orquestrador de agentes MCP construído para aprendizado — mostra em detalhes como ferramentas como OpenCode, Claude Code e Gemini CLI se comunicam com MCP servers por debaixo dos panos.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-6">
+          <a href="architecture.html" class="inline-flex items-center gap-2 px-4 py-2 bg-accent-700 hover:bg-accent-600 text-white text-sm font-medium rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            Ver Arquitetura
+          </a>
+          <a href="mvp.html" class="inline-flex items-center gap-2 px-4 py-2 bg-surface-200 hover:bg-surface-300 text-gray-300 text-sm font-medium rounded-lg transition">
+            Escopo do MVP
+          </a>
+        </div>
+      </div>
+
+      <hr class="border-surface-200 my-8" />
+
+      <!-- O que é isso -->
+      <section id="o-que-e">
+        <h2>O que é isso?</h2>
+        <p>
+          <code>orcha-mcp</code> é uma CLI Python que atua como <strong class="text-gray-300">MCP Host</strong>: conecta-se a múltiplos MCP servers (locais via STDIO ou remotos via HTTP), descobre suas ferramentas, e orquestra um LLM real (Anthropic Claude) para decidir quais ferramentas chamar em resposta a uma pergunta.
+        </p>
+        <p>
+          O diferencial é <strong class="text-accent-400">transparência total</strong>: cada mensagem JSON-RPC trocada entre o host, os clients e os servers é exposta no terminal — exatamente o que OpenCode e Claude Code fazem em background, mas que normalmente fica invisível ao usuário.
+        </p>
+
+        <div class="my-6 rounded-xl border border-surface-200 overflow-hidden">
+          <div class="bg-surface-100 px-4 py-2 border-b border-surface-200 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+            <span class="ml-2 text-xs text-surface-400 font-mono">fluxo de orquestração</span>
+          </div>
+          <pre class="!rounded-none !border-0 !my-0"><code class="language-plaintext" style="background:#161b22;display:block;padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:0.875rem;color:#8b949e;line-height:1.6;">Você pergunta algo
+       ↓
+  orcha-mcp <span style="color:#a855f7;">(MCP Host)</span>
+       ↓ envia histórico + lista de tools
+  LLM <span style="color:#58a6ff;">(Claude/OpenAI)</span>
+       ↓ responde com tool_use
+  orcha-mcp roteia para o MCP Client correto
+       ↓ JSON-RPC tools/call
+  MCP Server <span style="color:#3fb950;">(filesystem, fetch, etc.)</span>
+       ↓ retorna resultado
+  orcha-mcp injeta resultado no histórico
+       ↓
+  LLM responde ao usuário</code></pre>
+        </div>
+      </section>
+
+      <!-- Por que importa -->
+      <section id="por-que-importa">
+        <h2>Por que isso importa para aprendizado?</h2>
+        <p>
+          O MCP é o "cabo USB-C" do mundo de IA: um protocolo aberto que permite qualquer LLM usar qualquer ferramenta de forma padronizada. Entender como ele funciona dá base para:
+        </p>
+        <ul>
+          <li>Construir seus próprios MCP servers</li>
+          <li>Entender como agentes de IA tomam decisões sobre ferramentas</li>
+          <li>Depurar problemas em pipelines de agentes</li>
+          <li>Comparar abordagens entre diferentes ferramentas (OpenCode, Claude Code, Gemini CLI)</li>
+        </ul>
+      </section>
+
+      <!-- Instalação -->
+      <section id="instalacao">
+        <h2>Instalação</h2>
+        <p>Requer Python 3.11+. Clone o repositório e instale as dependências:</p>
+        <pre><code class="language-bash">git clone https://github.com/seu-usuario/orcha-mcp
+cd orcha-mcp
+
+# Com pip
+pip install -e .
+
+# Com uv (recomendado)
+uv sync</code></pre>
+      </section>
+
+      <!-- Configuração -->
+      <section id="configuracao">
+        <h2>Configuração rápida</h2>
+        <p>Crie um arquivo <code>orcha.json</code> na raiz do projeto:</p>
+        <pre><code class="language-json">{
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20241022"
+  },
+  "mcp_servers": {
+    "filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "."],
+      "enabled": true
+    },
+    "fetch": {
+      "type": "local",
+      "command": ["uvx", "mcp-server-fetch"],
+      "enabled": true
+    }
+  }
+}</code></pre>
+        <p>Adicione sua chave de API:</p>
+        <pre><code class="language-bash">export ANTHROPIC_API_KEY="sk-ant-..."</code></pre>
+      </section>
+
+      <!-- Comandos -->
+      <section id="comandos">
+        <h2>Comandos</h2>
+
+        <h3 id="cmd-list-tools">Listar ferramentas disponíveis</h3>
+        <p>Descobre e exibe todas as tools de todos os servers configurados.</p>
+        <pre><code class="language-bash">orcha list-tools</code></pre>
+        <p>Com <code>--verbose</code>, exibe também o JSON-RPC bruto trocado durante o <code>initialize</code> e o <code>tools/list</code>:</p>
+        <pre><code class="language-bash">orcha list-tools --verbose</code></pre>
+
+        <h3 id="cmd-call">Executar uma ferramenta diretamente</h3>
+        <p>Executa uma tool diretamente, sem passar pelo LLM:</p>
+        <pre><code class="language-bash">orcha call filesystem_read_file --args '{"path": "./README.md"}'</code></pre>
+        <p>Com <code>--verbose</code>, exibe o JSON-RPC do <code>tools/call</code> e da resposta:</p>
+        <pre><code class="language-bash">orcha call filesystem_read_file --args '{"path": "./README.md"}' --verbose</code></pre>
+
+        <h3 id="cmd-chat">Chat com orquestração</h3>
+        <p>Inicia um ciclo completo: envia a pergunta ao LLM, que decide quais tools usar, o orquestrador as executa via MCP, e o LLM responde com base nos resultados.</p>
+        <pre><code class="language-bash">orcha chat "Quais arquivos existem neste diretório?"</code></pre>
+        <p>Com <code>--verbose</code>, exibe cada etapa do protocolo:</p>
+        <pre><code class="language-bash">orcha chat "Quais arquivos existem neste diretório?" --verbose</code></pre>
+
+        <h3 id="cmd-interactive">Chat interativo (modo REPL)</h3>
+        <p>Abre um loop de conversa contínuo no terminal, mantendo histórico entre turnos:</p>
+        <pre><code class="language-bash">orcha chat --interactive</code></pre>
+      </section>
+
+      <!-- Flags -->
+      <section id="flags-globais">
+        <h2>Flags globais</h2>
+        <div class="rounded-xl border border-surface-200 overflow-hidden my-4">
+          <table>
+            <thead><tr><th>Flag</th><th>Descrição</th></tr></thead>
+            <tbody>
+              <tr><td><code>--verbose</code> / <code>-v</code></td><td>Exibe o JSON-RPC bruto em cada passo</td></tr>
+              <tr><td><code>--dry-run</code></td><td>Mostra o que seria feito sem executar</td></tr>
+              <tr><td><code>--config &lt;path&gt;</code></td><td>Usa um arquivo de config alternativo (padrão: <code>./orcha.json</code>)</td></tr>
+              <tr><td><code>--server &lt;nome&gt;</code></td><td>Restringe a operação a um server específico</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Estrutura do projeto -->
+      <section id="estrutura">
+        <h2>Estrutura do projeto</h2>
+        <pre><code class="language-plaintext">orcha-mcp/
+├── orcha/
+│   ├── __init__.py
+│   ├── cli.py              # Entry point da CLI (Click/Typer)
+│   ├── config.py           # Leitura e validação do orcha.json
+│   ├── host.py             # MCP Host — gerencia múltiplos clients
+│   ├── client.py           # MCP Client — conexão com um server
+│   ├── transport/
+│   │   ├── stdio.py        # Transport STDIO (processos locais)
+│   │   └── http.py         # Transport HTTP (servers remotos)
+│   ├── llm/
+│   │   ├── base.py         # Interface comum para providers LLM
+│   │   └── anthropic.py    # Integração com Anthropic Claude
+│   └── inspector.py        # Formatação e exibição do JSON-RPC
+├── docs/
+│   ├── architecture.md
+│   ├── backlog.md
+│   └── mvp.md
+├── examples/
+│   └── orcha.json
+├── tests/
+├── orcha.json
+├── pyproject.toml
+└── README.md</code></pre>
+      </section>
+
+      <!-- Referências -->
+      <section id="referencias">
+        <h2>Referências</h2>
+        <div class="grid sm:grid-cols-2 gap-3 my-4">
+          <a href="https://modelcontextprotocol.io" target="_blank" class="flex items-start gap-3 p-4 rounded-xl border border-surface-200 hover:border-accent-700 hover:bg-surface-100 transition group">
+            <span class="text-2xl">📋</span>
+            <div>
+              <div class="font-medium text-gray-300 group-hover:text-accent-300 transition text-sm">Model Context Protocol</div>
+              <div class="text-xs text-surface-400 mt-0.5">Especificação oficial do protocolo</div>
+            </div>
+          </a>
+          <a href="https://github.com/modelcontextprotocol/python-sdk" target="_blank" class="flex items-start gap-3 p-4 rounded-xl border border-surface-200 hover:border-accent-700 hover:bg-surface-100 transition group">
+            <span class="text-2xl">🐍</span>
+            <div>
+              <div class="font-medium text-gray-300 group-hover:text-accent-300 transition text-sm">MCP Python SDK</div>
+              <div class="text-xs text-surface-400 mt-0.5">SDK oficial em Python</div>
+            </div>
+          </a>
+          <a href="https://github.com/modelcontextprotocol/servers" target="_blank" class="flex items-start gap-3 p-4 rounded-xl border border-surface-200 hover:border-accent-700 hover:bg-surface-100 transition group">
+            <span class="text-2xl">🗂️</span>
+            <div>
+              <div class="font-medium text-gray-300 group-hover:text-accent-300 transition text-sm">MCP Reference Servers</div>
+              <div class="text-xs text-surface-400 mt-0.5">Servers de referência do protocolo</div>
+            </div>
+          </a>
+          <a href="https://opencode.ai/docs/mcp-servers/" target="_blank" class="flex items-start gap-3 p-4 rounded-xl border border-surface-200 hover:border-accent-700 hover:bg-surface-100 transition group">
+            <span class="text-2xl">⚡</span>
+            <div>
+              <div class="font-medium text-gray-300 group-hover:text-accent-300 transition text-sm">OpenCode — como usa MCP</div>
+              <div class="text-xs text-surface-400 mt-0.5">Documentação do OpenCode</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <footer class="mt-16 pt-8 border-t border-surface-200 text-center text-sm text-surface-400">
+        <p>orcha-mcp — projeto educacional sobre o Model Context Protocol</p>
+        <div class="flex justify-center gap-4 mt-3">
+          <a href="architecture.html" class="hover:text-accent-400 transition">Arquitetura</a>
+          <span>·</span>
+          <a href="backlog.html" class="hover:text-accent-400 transition">Backlog</a>
+          <span>·</span>
+          <a href="mvp.html" class="hover:text-accent-400 transition">MVP</a>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    // Highlight.js
+    hljs.highlightAll();
+
+    // Copy buttons
+    document.querySelectorAll('pre').forEach(pre => {
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'copiar';
+      pre.appendChild(btn);
+      btn.addEventListener('click', () => {
+        const code = pre.querySelector('code');
+        navigator.clipboard.writeText(code.innerText).then(() => {
+          btn.textContent = 'copiado!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 2000);
+        });
+      });
+    });
+
+    // Sidebar nav from headings
+    const sections = document.querySelectorAll('section[id]');
+    const nav = document.getElementById('sidebar-nav');
+    const headingMap = {
+      'o-que-e': 'O que é isso?',
+      'por-que-importa': 'Por que importa?',
+      'instalacao': 'Instalação',
+      'configuracao': 'Configuração',
+      'comandos': 'Comandos',
+      'flags-globais': 'Flags globais',
+      'estrutura': 'Estrutura do projeto',
+      'referencias': 'Referências',
+    };
+    sections.forEach(s => {
+      const a = document.createElement('a');
+      a.href = '#' + s.id;
+      a.className = 'sidebar-link px-3 py-1.5 text-sm text-gray-500 rounded';
+      a.textContent = headingMap[s.id] || s.id;
+      nav.appendChild(a);
+    });
+
+    // Scroll-spy
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        const link = nav.querySelector(`a[href="#${e.target.id}"]`);
+        if (!link) return;
+        if (e.isIntersecting) {
+          nav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+          link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+
+    // Mobile menu
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconOpen = document.getElementById('icon-open');
+    const iconClose = document.getElementById('icon-close');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      iconOpen.classList.toggle('hidden');
+      iconClose.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>
