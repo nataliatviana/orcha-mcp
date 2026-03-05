@@ -46,6 +46,9 @@ coverage.xml
 # pyenv
 .python-version
 
+# venv
+.venv/
+
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -69,3 +72,6 @@ Thumbs.db
 
 # Docs build
 /docs/_build/
+
+# UV lock
+uv.lock
