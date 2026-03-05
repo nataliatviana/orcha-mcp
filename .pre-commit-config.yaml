@@ -1,10 +1,10 @@
 repos:
-  # Ruff — lint (with auto-fix) + format
+  # Ruff — lint + format
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.0
     hooks:
       - id: ruff
-        args: [--fix]   # auto-fix safe violations before failing
+        args: [--fix]
       - id: ruff-format
 
   # Mypy — static type checking

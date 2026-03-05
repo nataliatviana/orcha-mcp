@@ -61,7 +61,6 @@ coverage.xml
 
 # dotenv
 .env
-.env.*
 
 # Ruff
 .ruff_cache/
