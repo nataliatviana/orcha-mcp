@@ -1,0 +1,26 @@
+[project]
+name = "orcha-mcp"
+version = "0.1.0"
+description = "Orcha MCP CLI"
+readme = "README.md"
+requires-python = ">=3.11"
+
+authors = [
+    { name = "Raiane Oliveira", email = "raiane.oliveira404@gmail.com" },
+    { name = "Giovana Guedes", email = "giovanaguedesps@gmail.com" },
+    { name = "Natalia Viana", email = "nataliatviana@gmail.com" }
+]
+
+dependencies = [
+    "typer>=0.12.0",
+    "mcp",
+    "httpx>=0.27.0",
+    "anthropic>=0.30.0",
+    "rich>=13.7.0",
+    "pydantic>=2.0.0"
+]
+
+[project.scripts]
+orcha = "orcha.cli:main"
+
+[tool.uv]
