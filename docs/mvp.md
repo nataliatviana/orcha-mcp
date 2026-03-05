@@ -78,27 +78,29 @@ O MVP deve ser suficiente para que um desenvolvedor entenda, de forma prática e
 
 Referência completa no [backlog.md](./backlog.md). Resumo:
 
-| ID | Descrição | Prioridade |
-|----|-----------|------------|
-| US01 | Conexão STDIO com server local | Alta |
-| US02 | Conexão HTTP com server remoto | Alta |
-| US03 | Exibição da capability negotiation | Alta |
-| US04 | Configuração de múltiplos servers via JSON | Alta |
-| US05 | Ativar/desativar servers individualmente | Alta |
-| US06 | Path alternativo de config | Média |
-| US07 | Listar todas as tools disponíveis | Alta |
-| US08 | Inspecionar JSON-RPC do tools/list | Alta |
-| US09 | Inspecionar inputSchema de uma tool | Média |
-| US10 | Executar uma tool diretamente | Alta |
-| US11 | Roteamento automático para o server correto | Alta |
-| US12 | Inspecionar JSON-RPC do tools/call | Alta |
-| US13 | Modo dry-run | Média |
-| US14 | Chat com uma pergunta única | Alta |
-| US15 | Exibir cada etapa do loop LLM com --verbose | Alta |
-| US16 | Configuração do provider LLM | Alta |
-| US17 | Chat interativo (REPL) | Média |
-| US18 | Flag --verbose global | Alta |
-| US19 | Sumário de sessão ao encerrar | Baixa |
+| ID | Sprint | Descrição | Prioridade |
+|----|--------|-----------|------------|
+| US00 | 0 | Setup do projeto | Alta |
+| US01 | 1 | Configuração de múltiplos servers via JSON | Alta |
+| US02 | 1 | Variáveis de ambiente por server | Alta |
+| US03 | 1 | Ativar/desativar servers individualmente | Alta |
+| US04 | 1 | Path alternativo de config | Média |
+| US05 | 1 | Conexão STDIO com server local | Alta |
+| US06 | 1 | Encerramento gracioso de conexões | Alta |
+| US07 | 1 | Exibição da capability negotiation | Alta |
+| US08 | 2 | Listar todas as tools disponíveis | Alta |
+| US09 | 2 | Inspecionar inputSchema de uma tool | Média |
+| US10 | 2 | Flag --verbose global | Alta |
+| US11 | 2 | Inspecionar JSON-RPC do tools/list e tools/call | Alta |
+| US12 | 3 | Executar uma tool diretamente | Alta |
+| US13 | 3 | Roteamento automático para o server correto | Alta |
+| US14 | 3 | Modo dry-run | Média |
+| US15 | 4 | Configuração do provider LLM | Alta |
+| US16 | 4 | Chat com uma pergunta única | Alta |
+| US17 | 4 | Exibir cada etapa do loop LLM com --verbose | Alta |
+| US18 | 4 | Conexão HTTP com server remoto | Alta |
+| US19 | 5 | Chat interativo (REPL) | Média |
+| US20 | 5 | Sumário de sessão ao encerrar | Baixa |
 
 ---
 
@@ -238,24 +240,27 @@ Para desenvolver e testar o MVP localmente, os seguintes servers são suficiente
 Para implementar o MVP de forma incremental, seguindo o backlog:
 
 ```
+Sprint 0 — Bootstrap
+  E0: Setup (US00)
+
 Sprint 1 — Fundação
-  E2: Config (US04, US05, US06)
-  E1: MCP Client STDIO (US01, US03)
+  E2: Config (US01, US02, US03, US04)
+  E1: MCP Client STDIO (US05, US06, US07)
 
 Sprint 2 — Discovery
-  E3: Tool Discovery (US07, US08, US09)
-  E6: --verbose (US18)
+  E3: Tool Discovery (US08, US09)
+  E6: --verbose + inspeção JSON-RPC (US10, US11)
 
 Sprint 3 — Execution
-  E4: Tool Execution (US10, US11, US12, US13)
+  E4: Tool Execution (US12, US13, US14)
 
 Sprint 4 — LLM Loop
-  E5: Loop LLM (US14, US15, US16)
-  E1: HTTP Transport (US02)
+  E5: Loop LLM (US15, US16, US17)
+  E1: HTTP Transport (US18)
 
 Sprint 5 — Polimento
-  E5: Chat interativo (US17)
-  E6: Sumário de sessão (US19)
+  E5: Chat interativo (US19)
+  E6: Sumário de sessão (US20)
 ```
 
 ---

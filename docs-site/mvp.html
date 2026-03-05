@@ -121,7 +121,7 @@
         </p>
 
         <!-- MVP checklist highlight -->
-        <div class="grid sm:grid-cols-3 gap-3 mt-6">
+        <div class="grid sm:grid-cols-4 gap-3 mt-6">
           <div class="p-4 rounded-xl border border-accent-800 bg-accent-900/30">
             <div class="text-2xl font-bold text-accent-400 mb-1">5</div>
             <div class="text-sm text-gray-500">comandos CLI</div>
@@ -129,6 +129,10 @@
           <div class="p-4 rounded-xl border border-blue-800 bg-blue-900/20">
             <div class="text-2xl font-bold text-blue-400 mb-1">2</div>
             <div class="text-sm text-gray-500">transports</div>
+          </div>
+          <div class="p-4 rounded-xl border border-purple-800 bg-purple-900/20">
+            <div class="text-2xl font-bold text-purple-400 mb-1">21</div>
+            <div class="text-sm text-gray-500">histórias no MVP</div>
           </div>
           <div class="p-4 rounded-xl border border-green-800 bg-green-900/20">
             <div class="text-2xl font-bold text-green-400 mb-1">5</div>
@@ -198,6 +202,26 @@
           </table>
         </div>
 
+        <h3 id="configuracao">Configuração (<code>orcha.json</code>)</h3>
+        <div class="flex flex-col gap-2 my-4">
+          <div class="flex items-center gap-3 p-3 bg-surface-100 rounded-lg border border-surface-200">
+            <span class="text-accent-400 text-xs font-mono shrink-0">type</span>
+            <span class="text-sm text-gray-300">Suporte a <code>"local"</code> (STDIO) e <code>"remote"</code> (HTTP)</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-surface-100 rounded-lg border border-surface-200">
+            <span class="text-accent-400 text-xs font-mono shrink-0">enabled</span>
+            <span class="text-sm text-gray-300">Campo por server — <code>true</code> / <code>false</code></span>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-surface-100 rounded-lg border border-surface-200">
+            <span class="text-accent-400 text-xs font-mono shrink-0">environment</span>
+            <span class="text-sm text-gray-300">Variáveis de ambiente injetadas no processo do server</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-surface-100 rounded-lg border border-surface-200">
+            <span class="text-accent-400 text-xs font-mono shrink-0">llm</span>
+            <span class="text-sm text-gray-300">Configuração do provider LLM (<code>provider</code>, <code>model</code>)</span>
+          </div>
+        </div>
+
         <h3 id="transports">Transports</h3>
         <div class="grid sm:grid-cols-2 gap-4 my-4">
           <div class="p-4 rounded-xl border border-surface-200 bg-surface-100">
@@ -247,6 +271,40 @@
               <tr><td>Múltiplos providers LLM</td><td class="text-surface-400">Anthropic tem melhor suporte a tool_use no MVP</td></tr>
               <tr><td>OAuth automático</td><td class="text-surface-400">Servers remotos usarão Bearer token simples</td></tr>
               <tr><td>Registry de servers públicos</td><td class="text-surface-400">Configuração manual é suficiente para aprendizado</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Histórias do MVP -->
+      <section id="historias">
+        <h2>Histórias de Usuário do MVP</h2>
+        <p>Referência completa no <a href="backlog.html">backlog</a>. Resumo:</p>
+        <div class="rounded-xl border border-surface-200 overflow-hidden my-4">
+          <table>
+            <thead><tr><th>ID</th><th>Sprint</th><th>Descrição</th><th>Prioridade</th></tr></thead>
+            <tbody>
+              <tr><td><code>US00</code></td><td><span class="text-xs font-mono text-gray-500">0</span></td><td>Setup do projeto</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US01</code></td><td><span class="text-xs font-mono text-gray-500">1</span></td><td>Configuração de múltiplos servers via JSON</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US02</code></td><td><span class="text-xs font-mono text-gray-500">1</span></td><td>Variáveis de ambiente por server</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US03</code></td><td><span class="text-xs font-mono text-gray-500">1</span></td><td>Ativar/desativar servers individualmente</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US04</code></td><td><span class="text-xs font-mono text-gray-500">1</span></td><td>Path alternativo de config</td><td><span class="badge-media text-xs px-2 py-0.5 rounded-full font-medium">Média</span></td></tr>
+              <tr><td><code>US05</code></td><td><span class="text-xs font-mono text-gray-500">1</span></td><td>Conexão STDIO com server local</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US06</code></td><td><span class="text-xs font-mono text-gray-500">1</span></td><td>Encerramento gracioso de conexões</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US07</code></td><td><span class="text-xs font-mono text-gray-500">1</span></td><td>Exibição da capability negotiation</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US08</code></td><td><span class="text-xs font-mono text-gray-500">2</span></td><td>Listar todas as tools disponíveis</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US09</code></td><td><span class="text-xs font-mono text-gray-500">2</span></td><td>Inspecionar inputSchema de uma tool</td><td><span class="badge-media text-xs px-2 py-0.5 rounded-full font-medium">Média</span></td></tr>
+              <tr><td><code>US10</code></td><td><span class="text-xs font-mono text-gray-500">2</span></td><td>Flag --verbose global</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US11</code></td><td><span class="text-xs font-mono text-gray-500">2</span></td><td>Inspecionar JSON-RPC do tools/list e tools/call</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US12</code></td><td><span class="text-xs font-mono text-gray-500">3</span></td><td>Executar uma tool diretamente</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US13</code></td><td><span class="text-xs font-mono text-gray-500">3</span></td><td>Roteamento automático para o server correto</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US14</code></td><td><span class="text-xs font-mono text-gray-500">3</span></td><td>Modo dry-run</td><td><span class="badge-media text-xs px-2 py-0.5 rounded-full font-medium">Média</span></td></tr>
+              <tr><td><code>US15</code></td><td><span class="text-xs font-mono text-gray-500">4</span></td><td>Configuração do provider LLM</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US16</code></td><td><span class="text-xs font-mono text-gray-500">4</span></td><td>Chat com uma pergunta única</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US17</code></td><td><span class="text-xs font-mono text-gray-500">4</span></td><td>Exibir cada etapa do loop LLM com --verbose</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US18</code></td><td><span class="text-xs font-mono text-gray-500">4</span></td><td>Conexão HTTP com server remoto</td><td><span class="badge-alta text-xs px-2 py-0.5 rounded-full font-medium">Alta</span></td></tr>
+              <tr><td><code>US19</code></td><td><span class="text-xs font-mono text-gray-500">5</span></td><td>Chat interativo (REPL)</td><td><span class="badge-media text-xs px-2 py-0.5 rounded-full font-medium">Média</span></td></tr>
+              <tr><td><code>US20</code></td><td><span class="text-xs font-mono text-gray-500">5</span></td><td>Sumário de sessão ao encerrar</td><td><span class="badge-baixa text-xs px-2 py-0.5 rounded-full font-medium">Baixa</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -459,38 +517,45 @@ orcha = "orcha.cli:app"</code></pre>
 
         <div class="flex flex-col gap-3 my-4">
           <div class="flex gap-4 p-4 rounded-xl border border-surface-200 bg-surface-100 items-start">
+            <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-1 rounded-lg border border-accent-700 shrink-0 mt-0.5">Sprint 0</span>
+            <div>
+              <div class="text-sm font-semibold text-gray-300 mb-1">Bootstrap</div>
+              <div class="text-xs text-gray-500">E0: Setup (US00)</div>
+            </div>
+          </div>
+          <div class="flex gap-4 p-4 rounded-xl border border-surface-200 bg-surface-100 items-start">
             <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-1 rounded-lg border border-accent-700 shrink-0 mt-0.5">Sprint 1</span>
             <div>
               <div class="text-sm font-semibold text-gray-300 mb-1">Fundação</div>
-              <div class="text-xs text-gray-500">E2: Config (US04, US05, US06) · E1: MCP Client STDIO (US01, US03)</div>
+              <div class="text-xs text-gray-500">E2: Config (US01, US02, US03, US04) · E1: MCP Client STDIO (US05, US06, US07)</div>
             </div>
           </div>
           <div class="flex gap-4 p-4 rounded-xl border border-surface-200 bg-surface-100 items-start">
             <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-1 rounded-lg border border-accent-700 shrink-0 mt-0.5">Sprint 2</span>
             <div>
               <div class="text-sm font-semibold text-gray-300 mb-1">Discovery</div>
-              <div class="text-xs text-gray-500">E3: Tool Discovery (US07, US08, US09) · E6: --verbose (US18)</div>
+              <div class="text-xs text-gray-500">E3: Tool Discovery (US08, US09) · E6: --verbose + inspeção JSON-RPC (US10, US11)</div>
             </div>
           </div>
           <div class="flex gap-4 p-4 rounded-xl border border-surface-200 bg-surface-100 items-start">
             <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-1 rounded-lg border border-accent-700 shrink-0 mt-0.5">Sprint 3</span>
             <div>
               <div class="text-sm font-semibold text-gray-300 mb-1">Execution</div>
-              <div class="text-xs text-gray-500">E4: Tool Execution (US10, US11, US12, US13)</div>
+              <div class="text-xs text-gray-500">E4: Tool Execution (US12, US13, US14)</div>
             </div>
           </div>
           <div class="flex gap-4 p-4 rounded-xl border border-surface-200 bg-surface-100 items-start">
             <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-1 rounded-lg border border-accent-700 shrink-0 mt-0.5">Sprint 4</span>
             <div>
               <div class="text-sm font-semibold text-gray-300 mb-1">LLM Loop</div>
-              <div class="text-xs text-gray-500">E5: Loop LLM (US14, US15, US16) · E1: HTTP Transport (US02)</div>
+              <div class="text-xs text-gray-500">E5: Loop LLM (US15, US16, US17) · E1: HTTP Transport (US18)</div>
             </div>
           </div>
           <div class="flex gap-4 p-4 rounded-xl border border-surface-200 bg-surface-100 items-start">
             <span class="text-xs font-mono bg-accent-900 text-accent-300 px-2 py-1 rounded-lg border border-accent-700 shrink-0 mt-0.5">Sprint 5</span>
             <div>
               <div class="text-sm font-semibold text-gray-300 mb-1">Polimento</div>
-              <div class="text-xs text-gray-500">E5: Chat interativo (US17) · E6: Sumário de sessão (US19)</div>
+              <div class="text-xs text-gray-500">E5: Chat interativo (US19) · E6: Sumário de sessão (US20)</div>
             </div>
           </div>
         </div>
@@ -562,6 +627,7 @@ orcha = "orcha.cli:app"</code></pre>
       'objetivo': 'Objetivo do MVP',
       'incluido': 'O que está incluído',
       'fora': 'O que está fora',
+      'historias': 'Histórias do MVP',
       'cenarios': 'Critérios de Aceite',
       'stack': 'Stack Técnica',
       'servers-dev': 'Servers de Desenvolvimento',
