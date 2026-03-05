@@ -27,6 +27,7 @@ orcha = "orcha.cli:main"
 dev-dependencies = [
     "ruff>=0.4.0",
     "mypy>=1.10.0",
+    "pytest>=8.0.0",
 ]
 
 # ---------------------------------------------------------------------------
@@ -65,5 +66,14 @@ python_version = "3.11"
 strict = true
 
 [[tool.mypy.overrides]]
+# mcp does not ship a py.typed marker yet
 module = ["mcp.*"]
 ignore_missing_imports = true
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
