@@ -1,0 +1,80 @@
+[project]
+name = "orcha-mcp"
+version = "0.1.0"
+description = "Orcha MCP CLI"
+readme = "README.md"
+requires-python = ">=3.11"
+
+authors = [
+    { name = "Raiane Oliveira", email = "raiane.oliveira404@gmail.com" },
+    { name = "Giovana Guedes", email = "giovanaguedesps@gmail.com" },
+    { name = "Natalia Viana", email = "nataliatviana@gmail.com" }
+]
+
+dependencies = [
+    "typer>=0.12.0",
+    "mcp",
+    "httpx>=0.27.0",
+    "anthropic>=0.30.0",
+    "rich>=13.7.0",
+    "pydantic>=2.0.0"
+]
+
+[project.scripts]
+orcha = "orcha.cli:main"
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+    "pytest>=8.0.0",
+    "pre-commit>=3.7.0",
+]
+
+# ---------------------------------------------------------------------------
+# Ruff — lint + format
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["orcha"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ---------------------------------------------------------------------------
+# Mypy — static type checking
+# ---------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[[tool.mypy.overrides]]
+# mcp does not ship a py.typed marker yet
+module = ["mcp.*"]
+ignore_missing_imports = true
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"

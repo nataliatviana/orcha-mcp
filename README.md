@@ -36,15 +36,28 @@ O MCP é o "cabo USB-C" do mundo de IA: um protocolo aberto que permite qualquer
 ## Instalação
 
 ```bash
-# Requer Python 3.11+
+# Requires Python 3.11+
 git clone https://github.com/seu-usuario/orcha-mcp
 cd orcha-mcp
 
-# Instala dependências
-pip install -e .
-
-# Ou com uv (recomendado)
+# Install dependencies (production + dev)
 uv sync
+
+# Set up your API key
+cp .env.example .env
+# Edit .env and fill in ANTHROPIC_API_KEY
+
+# Install pre-commit hooks (once per clone)
+uv run pre-commit install
+```
+
+Verify everything is working:
+
+```bash
+uv run orcha --help
+uv run ruff check .
+uv run mypy orcha/
+uv run pytest
 ```
 
 ## Configuração rápida
@@ -164,6 +177,8 @@ orcha-mcp/
 │   └── orcha.json          # Configuração de exemplo
 ├── tests/
 ├── orcha.json              # Config do projeto (gitignore a sua se tiver secrets)
+├── .env.example
+├── .pre-commit-config.yaml
 ├── pyproject.toml
 └── README.md
 ```
