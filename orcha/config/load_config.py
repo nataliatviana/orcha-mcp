@@ -45,7 +45,7 @@ def load_config(
         validate(instance=config, schema=schema)
         return config
     except ValidationError as e:
-        raise InvalidConfigFileError(f"Validation error: {e.message}") from e
+        raise InvalidConfigFileError(f"Validation error: {e}") from e
 
 
 def read_json(path: str) -> dict[str, Any]:
