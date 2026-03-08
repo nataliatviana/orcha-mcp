@@ -29,7 +29,7 @@ def load_global_config(ctx: typer.Context) -> None:
 def run(ctx: typer.Context) -> None:
     """Run the orchestration."""
     typer.echo("Running Orcha...")
-    typer.echo(f"Configuration loaded successfully: {ctx.obj}")
+    typer.echo("Configuration loaded successfully.")
 
 
 def main() -> None:

@@ -18,6 +18,8 @@ CONFIG_SCHEMA_NAME = "config_schema.json"
 config_path = Path(user_config_dir(APP_NAME))
 FULL_DEFAULT_CONFIG_PATH = config_path / DEFAULT_CONFIG_NAME
 
+_SCHEMA_PATH = Path(__file__).parent / CONFIG_SCHEMA_NAME
+
 
 def load_config(
     file_path: Path = Path(DEFAULT_CONFIG_NAME),
@@ -36,8 +38,8 @@ def load_config(
         config_file.write_text(json.dumps(default_config, indent=2), encoding="utf-8")
 
     try:
-        config = read_json(str(config_file))
-        schema = read_json(CONFIG_SCHEMA_NAME)
+        config = read_json(config_file)
+        schema = read_json(_SCHEMA_PATH)
     except Exception as e:
         raise InvalidConfigFileError(f"Error reading config: {e}") from e
 
@@ -48,11 +50,10 @@ def load_config(
         raise InvalidConfigFileError(f"Validation error: {e}") from e
 
 
-def read_json(path: str) -> dict[str, Any]:
+def read_json(path: Path) -> dict[str, Any]:
     """Read a JSON file and return a dictionary."""
 
-    with open(path) as f:
-        data: Any = json.load(f)
+    data: Any = json.loads(path.read_text(encoding="utf-8"))
 
     if not isinstance(data, dict):
         raise ValueError("JSON root must be an object")
