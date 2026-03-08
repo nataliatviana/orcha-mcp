@@ -5,12 +5,6 @@ from pathlib import Path
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def set_schema_cwd(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Garantee that read_json(CONFIG_SCHEMA_NAME) finds the schema via CWD."""
-    monkeypatch.chdir(Path(__file__).parent.parent)
-
-
 @pytest.fixture
 def make_config(tmp_path: Path) -> Callable[[Mapping[str, object]], Path]:
     """Factory: writes orcha.json to tmp_path with provided content."""

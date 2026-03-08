@@ -6,4 +6,8 @@ class InvalidConfigFileError(Exception):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
-        self.message = message
+
+    @property
+    def message(self) -> str:
+        """Return the error message, kept consistent with ``str(self)``."""
+        return str(self)
