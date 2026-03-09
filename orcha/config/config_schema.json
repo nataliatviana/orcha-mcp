@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["llm"],
+  "properties": {
+    "llm": {
+      "type": "object",
+      "properties": {
+        "provider": { "type": "string" },
+        "model": { "type": "string" }
+      },
+      "required": ["provider", "model"]
+    },
+    "mcps": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": { "const": "local" },
+              "command": { "type": "array", "items": { "type": "string" } },
+              "environment": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              },
+              "enabled": { "type": "boolean" }
+            },
+            "required": ["type", "command"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": { "const": "remote" },
+              "url": { "type": "string" },
+              "enabled": { "type": "boolean" },
+              "headers": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              },
+              "timeout": { "type": "integer" }
+            },
+            "required": ["type", "url"],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  }
+}
