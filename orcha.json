@@ -1,0 +1,16 @@
+{
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet"
+  },
+  "mcp_servers": {
+    "filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "."],
+      "enabled": true,
+      "environment": {
+        "TEST_ENV": "hello"
+      }
+    }
+  }
+}
