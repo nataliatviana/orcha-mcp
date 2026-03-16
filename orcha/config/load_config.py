@@ -59,3 +59,13 @@ def read_json(path: Path) -> dict[str, Any]:
         raise ValueError("JSON root must be an object")
 
     return data
+
+def get_enabled_servers(config: dict[str, Any]) -> dict[str, Any]:
+    """Return only enabled MCP servers."""
+    servers = config.get("mcps", {})
+
+    return {
+        name: server
+        for name, server in servers.items()
+        if server.get("enabled", True)
+    }

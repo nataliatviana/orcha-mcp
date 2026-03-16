@@ -4,6 +4,7 @@ from .load_config import (
     APP_NAME,
     DEFAULT_CONFIG_NAME,
     FULL_DEFAULT_CONFIG_PATH,
+    get_enabled_servers,
     load_config,
     read_json,
 )
@@ -14,4 +15,5 @@ __all__ = [
     "FULL_DEFAULT_CONFIG_PATH",
     "load_config",
     "read_json",
+    "get_enabled_servers",
 ]
