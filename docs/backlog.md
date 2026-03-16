@@ -218,6 +218,8 @@
 - [ ] Teste de integração faz handshake com um server real (ou server de teste `server-everything`)
 - [ ] Erro ao iniciar o subprocesso (comando não encontrado) exibe mensagem clara
 - [ ] Tipagem estática completa
+- [ ] Pipeline CI (`.github/workflows/ci.yml`) executa lint, typecheck e testes unitários em todo push e PR para `main`
+- [ ] Pipeline de release (`.github/workflows/release.yml`) executa CI e cria GitHub Release ao fazer push de tag `v*.*.*`
 
 ---
 
