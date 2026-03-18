@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import typer
 
-from orcha.config import FULL_DEFAULT_CONFIG_PATH, load_config
+from orcha.config import FULL_DEFAULT_CONFIG_PATH, get_enabled_servers, load_config
 from orcha.errors import InvalidConfigFileError
 
 app = typer.Typer(help="Orcha — MCP orchestrator CLI.")
@@ -26,10 +26,32 @@ def load_global_config(ctx: typer.Context) -> None:
 
 
 @app.command()
-def run(ctx: typer.Context) -> None:
+def run(
+    ctx: typer.Context,
+    server: str | None = typer.Option(
+        None,
+        "--server",
+        help="Run only a specific MCP server",
+    ),
+) -> None:
     """Run the orchestration."""
-    typer.echo("Running Orcha...")
-    typer.echo("Configuration loaded successfully.")
+
+    config = ctx.obj
+    servers = config.get("mcps", {})
+
+    if server:
+        if server not in servers:
+            typer.echo(f"Server '{server}' not found in configuration.")
+            raise typer.Exit(code=1)
+
+        selected_servers = {server: servers[server]}
+    else:
+        selected_servers = get_enabled_servers(config)
+
+    typer.echo("Servers to run:")
+
+    for name in selected_servers:
+        typer.echo(f"- {name}")
 
 
 def main() -> None:
