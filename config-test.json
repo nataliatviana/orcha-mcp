@@ -1,0 +1,6 @@
+{
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude"
+  }
+}

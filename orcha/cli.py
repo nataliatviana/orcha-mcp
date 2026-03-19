@@ -6,16 +6,37 @@ import typer
 
 from orcha.config import FULL_DEFAULT_CONFIG_PATH, get_enabled_servers, load_config
 from orcha.errors import InvalidConfigFileError
-
+from pathlib import Path
 app = typer.Typer(help="Orcha — MCP orchestrator CLI.")
 
 
 @app.callback()
-def load_global_config(ctx: typer.Context) -> None:
+def load_global_config(
+    ctx: typer.Context,
+    config: str | None = typer.Option(
+        None,
+        "--config",
+        help="Path to config file",
+    ),
+) -> None:
     """Load the global configuration."""
     try:
-        config = load_config()
-        ctx.obj = config
+        if config:
+            path = Path(config)
+
+            if not path.exists():
+                typer.echo(f"Config file not found: {config}")
+                raise typer.Exit(code=1)
+
+            loaded_config = load_config(
+                file_path=Path(path.name),
+                dir_path=path.parent,
+            )
+        else:
+            loaded_config = load_config()
+
+        ctx.obj = loaded_config
+
     except InvalidConfigFileError as e:
         typer.echo(e.message)
         typer.echo(
