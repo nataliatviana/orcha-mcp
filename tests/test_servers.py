@@ -14,6 +14,7 @@ def test_disabled_server_is_filtered():
     assert "server1" in result
     assert "server2" not in result
 
+
 def test_server_enabled_by_default():
     config = {
         "mcps": {
