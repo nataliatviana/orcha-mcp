@@ -4,10 +4,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import anyio
 import typer
 
+from orcha.client.stdio import connect_stdio
 from orcha.config import FULL_DEFAULT_CONFIG_PATH, get_enabled_servers, load_config
 from orcha.errors import InvalidConfigFileError
+from orcha.config.schema import LocalServerConfig
 
 app = typer.Typer(help="Orcha — MCP orchestrator CLI.")
 
@@ -24,7 +27,7 @@ def load_global_config(
     """Load the global configuration."""
     try:
         if config:
-            path = Path(config)
+            path = Path(config).resolve()
 
             if not path.exists():
                 typer.echo(f"Config file not found: {config}")
@@ -75,6 +78,17 @@ def run(
 
     for name in selected_servers:
         typer.echo(f"- {name}")
+
+    # dispara handshake
+    async def run_servers() -> None:
+        for name, server_config in selected_servers.items():
+            if server_config.get("type") == "local":
+                typed_config = LocalServerConfig(**server_config)
+
+                async with connect_stdio(name, typed_config):
+                    pass
+
+    anyio.run(run_servers)
 
 
 def main() -> None:

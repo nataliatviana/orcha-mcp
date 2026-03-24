@@ -2,5 +2,12 @@
   "llm": {
     "provider": "anthropic",
     "model": "claude"
+  },
+  "mcps": {
+    "filesystem": {
+      "type": "local",
+      "command": ["python", "-c", "print('hello')"],
+      "environment": {}
+    }
   }
 }

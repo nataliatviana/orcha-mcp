@@ -60,6 +60,18 @@ async def connect_stdio(
             ClientSession(read, write) as session,
         ):
             init_result = await session.initialize()
+
+            server_info = init_result.serverInfo
+            capabilities = init_result.capabilities
+
+            print("\n MCP Server Connected")
+            print(f"Name: {server_info.name}")
+            print(f"Version: {server_info.version}")
+            print("Capabilities:")
+
+            for cap in capabilities.model_dump().keys():
+                print(f"- {cap}")
+
             yield ConnectedServer(
                 name=name,
                 session=session,
