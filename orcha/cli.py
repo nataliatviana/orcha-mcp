@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TypedDict
 
 import anyio
 import typer
@@ -15,14 +16,17 @@ from orcha.config.schema import LocalServerConfig
 app = typer.Typer(help="Orcha — MCP orchestrator CLI.")
 
 
+# tipagem do contexto
+class AppContext(TypedDict):
+    config: dict
+    verbose: bool
+
+
 @app.callback()
 def load_global_config(
     ctx: typer.Context,
-    config: str | None = typer.Option(
-        None,
-        "--config",
-        help="Path to config file",
-    ),
+    config: str | None = typer.Option(None, "--config", help="Path to config file"),
+    verbose: bool = typer.Option(False, "--verbose", help="Show detailed logs"),
 ) -> None:
     """Load the global configuration."""
     try:
@@ -40,7 +44,10 @@ def load_global_config(
         else:
             loaded_config = load_config()
 
-        ctx.obj = loaded_config
+        ctx.obj = {
+            "config": loaded_config,
+            "verbose": verbose,
+        }
 
     except InvalidConfigFileError as e:
         typer.echo(e.message)
@@ -62,7 +69,15 @@ def run(
 ) -> None:
     """Run the orchestration."""
 
-    config = ctx.obj
+    # proteção contra ctx vazio
+    if ctx.obj is None:
+        typer.echo("Configuration not loaded.")
+        raise typer.Exit(code=1)
+
+    context: AppContext = ctx.obj
+    config = context["config"]
+    verbose = context["verbose"]
+
     servers = config.get("mcps", {})
 
     if server:
@@ -74,7 +89,7 @@ def run(
     else:
         selected_servers = get_enabled_servers(config)
 
-    typer.echo("Servers to run:")
+    typer.echo("\nServers to run:")
 
     for name in selected_servers:
         typer.echo(f"- {name}")
@@ -85,7 +100,7 @@ def run(
             if server_config.get("type") == "local":
                 typed_config = LocalServerConfig(**server_config)
 
-                async with connect_stdio(name, typed_config):
+                async with connect_stdio(name, typed_config, verbose=verbose):
                     pass
 
     anyio.run(run_servers)

@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import os
+import json
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 
+import typer
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from mcp.types import InitializeResult
@@ -28,26 +30,13 @@ class ConnectedServer:
 async def connect_stdio(
     name: str,
     config: LocalServerConfig,
+    verbose: bool = False,
 ) -> AsyncIterator[ConnectedServer]:
-    """Start a local MCP server subprocess and perform the MCP handshake.
+    """Start a local MCP server subprocess and perform the MCP handshake."""
 
-    Starts the server process using ``config.command``, sends the ``initialize``
-    request (with ``protocolVersion`` and ``clientInfo``), receives the server
-    capabilities, and sends ``notifications/initialized`` — all via the MCP SDK.
-
-    Args:
-        name: Logical name for this server (the key used in ``orcha.json``).
-        config: The server's configuration (command, environment flags, etc.).
-
-    Yields:
-        A :class:`ConnectedServer` with the active session and the
-        :class:`~mcp.types.InitializeResult` returned by the server.
-
-    Raises:
-        ServerConnectionError: If the subprocess cannot be started because the
-            command is not found or is otherwise unavailable.
-    """
+    # 🔐 merge env (task anterior)
     env: dict[str, str] = {**dict(os.environ), **config.environment}
+
     params = StdioServerParameters(
         command=config.command[0],
         args=config.command[1:],
@@ -59,24 +48,33 @@ async def connect_stdio(
             stdio_client(params) as (read, write),
             ClientSession(read, write) as session,
         ):
+            # handshake MCP
             init_result = await session.initialize()
 
             server_info = init_result.serverInfo
             capabilities = init_result.capabilities
 
-            print("\n MCP Server Connected")
-            print(f"Name: {server_info.name}")
-            print(f"Version: {server_info.version}")
-            print("Capabilities:")
+            
+            typer.echo("\n=== MCP Server Connected ===")
+            typer.echo(f"Server: {server_info.name}")
+            typer.echo(f"Version: {server_info.version}")
+            typer.echo("Capabilities:")
 
-            for cap in capabilities.model_dump().keys():
-                print(f"- {cap}")
+            for key, value in capabilities.model_dump().items():
+                if value:
+                    typer.echo(f"  - {key}")
+
+            # verbose → JSON-RPC completo
+            if verbose:
+                typer.echo("\n🔍 RAW INITIALIZE RESPONSE:")
+                typer.echo(json.dumps(init_result.model_dump(), indent=2))
 
             yield ConnectedServer(
                 name=name,
                 session=session,
                 init_result=init_result,
             )
+
     except FileNotFoundError as exc:
         raise ServerConnectionError(
             f"Server '{name}': command not found — '{config.command[0]}'. "
